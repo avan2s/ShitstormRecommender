@@ -2,6 +2,8 @@ package shitstorm.persistence.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class ETakenDecisionEffect implements Serializable {
 	private List<ETakenDecision> takenDecisions;
 
 	public ETakenDecisionEffect() {
+		this.takenDecisions = new ArrayList<>();
 	}
 
 	public int getIdTakenDecisionEffect() {

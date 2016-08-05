@@ -2,13 +2,14 @@ package shitstorm.pojos;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import shitstorm.interfaces.IGenericDAO;
 
-public abstract class GenericDAOImpl<T, PK extends Serializable> implements IGenericDAO<T, PK> {
+public class GenericDAOImpl<T, PK extends Serializable> implements IGenericDAO<T, PK> {
 
 	protected Class<T> entityClass;
 
@@ -40,5 +41,13 @@ public abstract class GenericDAOImpl<T, PK extends Serializable> implements IGen
 	public void delete(T t) {
 		t = this.em.merge(t);
 		this.em.remove(t);
+	}
+	
+	@Override
+	public List<T> readAll(){
+		StringBuilder query = new StringBuilder();
+		query.append(this.entityClass.getSimpleName());
+		query.append(".findAll");
+		return this.em.createNamedQuery(query.toString(),this.entityClass).getResultList();
 	}
 }

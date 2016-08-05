@@ -1,8 +1,23 @@
 package shitstorm.persistence.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import shitstorm.enums.GoalEffect;
 
 
 /**
@@ -19,14 +34,15 @@ public class EGoal implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idGoal;
 
-	private String goalEffect;
+	@Enumerated(EnumType.STRING)
+	private GoalEffect goalEffect;
 
 	private String goalFigure;
 
 	//bi-directional many-to-one association to ENodeSet
 //	@OneToMany(mappedBy="goal")
 //	private List<ENodeSet> nodeSets;
-	@OneToOne(mappedBy="goal", fetch=FetchType.EAGER)
+	@OneToOne(cascade=CascadeType.ALL, mappedBy="goal", fetch=FetchType.EAGER)
 	private ENodeSet nodeSet;
 
 	//bi-directional many-to-many association to EProcess
@@ -34,6 +50,7 @@ public class EGoal implements Serializable {
 	private List<EProcess> processes;
 
 	public EGoal() {
+		this.processes = new ArrayList<>();
 	}
 
 	public int getIdGoal() {
@@ -44,11 +61,11 @@ public class EGoal implements Serializable {
 		this.idGoal = idGoal;
 	}
 
-	public String getGoalEffect() {
+	public GoalEffect getGoalEffect() {
 		return this.goalEffect;
 	}
 
-	public void setGoalEffect(String goalEffect) {
+	public void setGoalEffect(GoalEffect goalEffect) {
 		this.goalEffect = goalEffect;
 	}
 

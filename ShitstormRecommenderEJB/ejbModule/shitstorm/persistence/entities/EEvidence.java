@@ -1,8 +1,21 @@
 package shitstorm.persistence.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.Date;
+import java.util.Calendar;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -20,7 +33,7 @@ public class EEvidence implements Serializable {
 	private int idEvidence;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
+	private Calendar created;
 
 	private String value;
 
@@ -49,11 +62,11 @@ public class EEvidence implements Serializable {
 		this.idEvidence = idEvidence;
 	}
 
-	public Date getCreated() {
+	public Calendar getCreated() {
 		return this.created;
 	}
 
-	public void setCreated(Date created) {
+	public void setCreated(Calendar created) {
 		this.created = created;
 	}
 

@@ -2,6 +2,8 @@ package shitstorm.persistence.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,7 +34,7 @@ public class EProcessinstance implements Serializable {
 	private String refInProcessengine;
 
 	//bi-directional many-to-one association to EEvidence
-	@OneToMany(mappedBy="processinstance")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="processinstance")
 	private List<EEvidence> evidences;
 
 	//bi-directional many-to-one association to EProcess
@@ -41,6 +43,7 @@ public class EProcessinstance implements Serializable {
 	private EProcess process;
 
 	public EProcessinstance() {
+		this.evidences = new ArrayList<>();
 	}
 
 	public int getIdProcessinstance() {

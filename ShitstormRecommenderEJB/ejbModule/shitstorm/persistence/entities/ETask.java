@@ -2,6 +2,8 @@ package shitstorm.persistence.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,6 +41,7 @@ public class ETask implements Serializable {
 	private List<ETaskOptimizationmodel> taskOptimizationmodels;
 
 	public ETask() {
+		this.taskOptimizationmodels = new ArrayList<>();
 	}
 
 	public int getIdTask() {

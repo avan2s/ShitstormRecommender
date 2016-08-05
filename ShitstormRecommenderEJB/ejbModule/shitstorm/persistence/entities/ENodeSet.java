@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 import shitstorm.enums.NodeFocus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -51,6 +52,7 @@ public class ENodeSet implements Serializable {
 	private ETask task;
 
 	public ENodeSet() {
+		this.nodes = new ArrayList<>();
 	}
 
 	public int getIdNodeFocus() {

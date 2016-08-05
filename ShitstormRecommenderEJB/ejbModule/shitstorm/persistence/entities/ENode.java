@@ -106,4 +106,12 @@ public class ENode implements Serializable {
 		this.nodeSet = nodeSet;
 	}
 
+	public EProcessinstance getProcessinstance() {
+		return processinstance;
+	}
+
+	public void setProcessinstance(EProcessinstance processinstance) {
+		this.processinstance = processinstance;
+	}
+
 }

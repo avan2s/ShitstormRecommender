@@ -17,19 +17,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 /**
  * The persistent class for the evidence database table.
  * 
  */
 @Entity
-@Table(name="evidence")
-@NamedQuery(name="EEvidence.findAll", query="SELECT e FROM EEvidence e")
+@Table(name = "evidence")
+@NamedQuery(name = "EEvidence.findAll", query = "SELECT e FROM EEvidence e")
 public class EEvidence implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idEvidence;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -37,18 +36,13 @@ public class EEvidence implements Serializable {
 
 	private String value;
 
-	//bi-directional many-to-one association to ENode
+	// bi-directional many-to-one association to ENode
 	@ManyToOne
-	@JoinColumn(name="node_id")
+	@JoinColumn(name = "node_id")
 	private ENode node;
 
-	//bi-directional many-to-one association to EProcessinstance
-	@ManyToOne
-	@JoinColumn(name="processinstance_id")
-	private EProcessinstance processinstance;
-
-	//bi-directional one-to-one association to ETakenDecision
-	@OneToOne(cascade= CascadeType.ALL, mappedBy="evidence", fetch=FetchType.EAGER)
+	// bi-directional one-to-one association to ETakenDecision
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "evidence", fetch = FetchType.EAGER)
 	private ETakenDecision takenDecision;
 
 	public EEvidence() {
@@ -84,14 +78,6 @@ public class EEvidence implements Serializable {
 
 	public void setNode(ENode node) {
 		this.node = node;
-	}
-
-	public EProcessinstance getProcessinstance() {
-		return this.processinstance;
-	}
-
-	public void setProcessinstance(EProcessinstance processinstance) {
-		this.processinstance = processinstance;
 	}
 
 	public ETakenDecision getTakenDecision() {

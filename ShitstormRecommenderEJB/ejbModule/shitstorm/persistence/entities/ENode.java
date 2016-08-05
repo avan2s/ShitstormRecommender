@@ -43,6 +43,10 @@ public class ENode implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="node_focus_id")
 	private ENodeSet nodeSet;
+	
+	@ManyToOne
+	@JoinColumn(name="processinstance_id")
+	private EProcessinstance processinstance;
 
 	public ENode() {
 		this.evidences = new ArrayList<>();

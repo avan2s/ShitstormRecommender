@@ -36,6 +36,9 @@ public class EProcessinstance implements Serializable {
 	//bi-directional many-to-one association to EEvidence
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="processinstance")
 	private List<EEvidence> evidences;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="processinstance")
+	private List<ENode> nodes;
 
 	//bi-directional many-to-one association to EProcess
 	@ManyToOne
@@ -44,6 +47,7 @@ public class EProcessinstance implements Serializable {
 
 	public EProcessinstance() {
 		this.evidences = new ArrayList<>();
+		this.nodes = new ArrayList<>();
 	}
 
 	public int getIdProcessinstance() {
@@ -114,6 +118,14 @@ public class EProcessinstance implements Serializable {
 
 	public void setProcess(EProcess process) {
 		this.process = process;
+	}
+
+	public List<ENode> getNodes() {
+		return nodes;
+	}
+
+	public void setNodes(List<ENode> nodes) {
+		this.nodes = nodes;
 	}
 
 }

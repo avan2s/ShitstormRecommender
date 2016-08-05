@@ -20,56 +20,56 @@ public class InitializationBean {
 
 	@EJB
 	private IGoalDAO goalDao;
-	
+
 	@EJB
 	private IProcessDAO processDAO;
 
 	@PostConstruct
 	private void initialize() {
 		if (goalDao.readAll().size() == 0) {
+			// Define Process
 			EProcess process = new EProcess();
 			process.setInfluenceDiagramFilename("prototype_shitstorm_part_final unrolled_3");
 			process.setInfluenceDiagramPeriodSeperator("_");
 			process.setProcessName("Testprozess");
 			process.setRefInProcessengine("Ref(Tesprozess)");
-//
-//			// TODO Später entfernen, um dynamisch zu halten
+
+			// Define Test-Instance
+			// // TODO Später entfernen, um dynamisch zu halten
 			EProcessinstance processInstance = new EProcessinstance();
 			processInstance.setCurrentPeriod(0);
 			processInstance.setRefInProcessengine("Ref-Testinstance");
 			processInstance.setInfluenceDiagramFilename(processInstance.getRefInProcessengine() + ".xdsl");
 			process.addProcessinstance(processInstance);
-			
-			ENodeSet nsKosten = new ENodeSet();
-			nsKosten.setNodeAbbreviation("K");
-			nsKosten.setNodeFocus(NodeFocus.GOAL);			
 
 			// Define Goals
 			EGoal gCost = new EGoal();
 			gCost.setGoalFigure("Kosten");
 			gCost.setGoalEffect(GoalEffect.NEGATIVE);
-			gCost.setNodeSet(nsKosten);
-			
+
 			EGoal gTime = new EGoal();
 			gTime.setGoalFigure("Zeitaufwand");
 			gTime.setGoalEffect(GoalEffect.NEGATIVE);
-			
+
 			EGoal gCustomerSatisfaction = new EGoal();
 			gCustomerSatisfaction.setGoalEffect(GoalEffect.POSITIVE);
 			gCustomerSatisfaction.setGoalFigure("Kundenzufriedenheit");
-//
-//			ENodeSet nsZeitaufwand = new ENodeSet();
-//			nsZeitaufwand.setNodeAbbreviation("ZA");
-//			nsZeitaufwand.setNodeFocus(NodeFocus.GOAL);
-//
-			
-//
-//			ENodeSet nsCustomerSatisfaction = new ENodeSet();
-//			nsCustomerSatisfaction.setNodeAbbreviation("KZ");
-//			nsCustomerSatisfaction.setNodeFocus(NodeFocus.GOAL);
-//
-			
-//
+
+			// Define NodeSets
+			ENodeSet nsKosten = new ENodeSet();
+			nsKosten.setNodeAbbreviation("K");
+			nsKosten.setNodeFocus(NodeFocus.GOAL);
+
+			ENodeSet nsZeitaufwand = new ENodeSet();
+			nsZeitaufwand.setNodeAbbreviation("ZA");
+			nsZeitaufwand.setNodeFocus(NodeFocus.GOAL);
+
+			ENodeSet nsCustomerSatisfaction = new ENodeSet();
+			nsCustomerSatisfaction.setNodeAbbreviation("KZ");
+			nsCustomerSatisfaction.setNodeFocus(NodeFocus.GOAL);
+
+			// Define
+
 		}
 
 		// nsDAO.cr

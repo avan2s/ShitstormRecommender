@@ -13,7 +13,7 @@ public class InitializationBean {
 	public void initialize() {
 		
 		int x = 0;
-		//x=x+1;
+		x=x+1;
 //		this.initializeDummy();
 //		this.initializeDecisionFocus();
 //		this.initializeGoals();

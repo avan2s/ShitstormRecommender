@@ -41,7 +41,6 @@ public class EProcessinstance implements Serializable {
 	private EProcess process;
 
 	public EProcessinstance() {
-		// this.evidences = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 	}
 

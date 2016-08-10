@@ -5,18 +5,24 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
-import shitstorm.enums.GoalEffect;
-import shitstorm.enums.NodeFocus;
 import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.IProcessDAO;
-import shitstorm.persistence.entities.EGoal;
-import shitstorm.persistence.entities.ENodeSet;
-import shitstorm.persistence.entities.EProcess;
-import shitstorm.persistence.entities.EProcessinstance;
 
 @Singleton
 @Startup
 public class InitializationBean {
+	
+//	static
+//	{
+//	    try {
+//	        System.loadLibrary("JCoreImpl");
+//	        System.out.println("JCoreImpl loaded");
+//	        m_bLibraryLoaded = true;
+//	    } catch (UnsatisfiedLinkError e) {
+//	        m_bLibraryLoaded = false;
+//	        System.out.println("JCoreImpl NOT loaded " + e);
+//	    }
+//	}
 
 	@EJB
 	private IGoalDAO goalDao;
@@ -24,53 +30,64 @@ public class InitializationBean {
 	@EJB
 	private IProcessDAO processDAO;
 
+	@EJB
+	private NodeRegistratorBean nodeRegistrator;
+
 	@PostConstruct
 	private void initialize() {
-		if (goalDao.readAll().size() == 0) {
-			// Define Process
-			EProcess process = new EProcess();
-			process.setInfluenceDiagramFilename("prototype_shitstorm_part_final unrolled_3");
-			process.setInfluenceDiagramPeriodSeperator("_");
-			process.setProcessName("Testprozess");
-			process.setRefInProcessengine("Ref(Tesprozess)");
+		// System.setProperty("java.library.path", "D:/Development/dlls");
+		// System.loadLibrary("jsmile");
+		// Network net = new Network();
+		//this.nodeRegistrator.registerNodesForInfluenceDiagram("shitstorm.xdsl");
 
-			// Define Test-Instance
-			// // TODO Später entfernen, um dynamisch zu halten
-			EProcessinstance processInstance = new EProcessinstance();
-			processInstance.setCurrentPeriod(0);
-			processInstance.setRefInProcessengine("Ref-Testinstance");
-			processInstance.setInfluenceDiagramFilename(processInstance.getRefInProcessengine() + ".xdsl");
-			process.addProcessinstance(processInstance);
-
-			// Define Goals
-			EGoal gCost = new EGoal();
-			gCost.setGoalFigure("Kosten");
-			gCost.setGoalEffect(GoalEffect.NEGATIVE);
-
-			EGoal gTime = new EGoal();
-			gTime.setGoalFigure("Zeitaufwand");
-			gTime.setGoalEffect(GoalEffect.NEGATIVE);
-
-			EGoal gCustomerSatisfaction = new EGoal();
-			gCustomerSatisfaction.setGoalEffect(GoalEffect.POSITIVE);
-			gCustomerSatisfaction.setGoalFigure("Kundenzufriedenheit");
-
-			// Define NodeSets
-			ENodeSet nsKosten = new ENodeSet();
-			nsKosten.setNodeAbbreviation("K");
-			nsKosten.setNodeFocus(NodeFocus.GOAL);
-
-			ENodeSet nsZeitaufwand = new ENodeSet();
-			nsZeitaufwand.setNodeAbbreviation("ZA");
-			nsZeitaufwand.setNodeFocus(NodeFocus.GOAL);
-
-			ENodeSet nsCustomerSatisfaction = new ENodeSet();
-			nsCustomerSatisfaction.setNodeAbbreviation("KZ");
-			nsCustomerSatisfaction.setNodeFocus(NodeFocus.GOAL);
-
-			// Define
-
-		}
+		//
+		// if (goalDao.readAll().size() == 0) {
+		// // Define Process
+		// EProcess process = new EProcess();
+		// process.setInfluenceDiagramFilename("prototype_shitstorm_part_final
+		// unrolled_3");
+		// process.setInfluenceDiagramPeriodSeperator("_");
+		// process.setProcessName("Testprozess");
+		// process.setRefInProcessengine("Ref(Tesprozess)");
+		//
+		// // Define Test-Instance
+		// // // TODO Später entfernen, um dynamisch zu halten
+		// EProcessinstance processInstance = new EProcessinstance();
+		// processInstance.setCurrentPeriod(0);
+		// processInstance.setRefInProcessengine("Ref-Testinstance");
+		// processInstance.setInfluenceDiagramFilename(processInstance.getRefInProcessengine()
+		// + ".xdsl");
+		// process.addProcessinstance(processInstance);
+		//
+		// // Define Goals
+		// EGoal gCost = new EGoal();
+		// gCost.setGoalFigure("Kosten");
+		// gCost.setGoalEffect(GoalEffect.NEGATIVE);
+		//
+		// EGoal gTime = new EGoal();
+		// gTime.setGoalFigure("Zeitaufwand");
+		// gTime.setGoalEffect(GoalEffect.NEGATIVE);
+		//
+		// EGoal gCustomerSatisfaction = new EGoal();
+		// gCustomerSatisfaction.setGoalEffect(GoalEffect.POSITIVE);
+		// gCustomerSatisfaction.setGoalFigure("Kundenzufriedenheit");
+		//
+		// // Define NodeSets
+		// ENodeSet nsKosten = new ENodeSet();
+		// nsKosten.setNodeAbbreviation("K");
+		// nsKosten.setNodeFocus(NodeFocus.GOAL);
+		//
+		// ENodeSet nsZeitaufwand = new ENodeSet();
+		// nsZeitaufwand.setNodeAbbreviation("ZA");
+		// nsZeitaufwand.setNodeFocus(NodeFocus.GOAL);
+		//
+		// ENodeSet nsCustomerSatisfaction = new ENodeSet();
+		// nsCustomerSatisfaction.setNodeAbbreviation("KZ");
+		// nsCustomerSatisfaction.setNodeFocus(NodeFocus.GOAL);
+		//
+		// // Define
+		//
+		// }
 
 		// nsDAO.cr
 		// eate(nsKosten);

@@ -43,7 +43,7 @@ public class EGoal implements Serializable {
 //	@OneToMany(mappedBy="goal")
 //	private List<ENodeSet> nodeSets;
 	@OneToOne(cascade=CascadeType.ALL, mappedBy="goal", fetch=FetchType.EAGER)
-	private ENodeSet nodeSet;
+	private ENodeGroup nodeGroup;
 
 	//bi-directional many-to-many association to EProcess
 	@ManyToMany(mappedBy="goals")
@@ -84,12 +84,12 @@ public class EGoal implements Serializable {
 //	public void setNodeSets(List<ENodeSet> nodeSets) {
 //		this.nodeSets = nodeSets;
 //	}
-	public ENodeSet getNodeSet() {
-		return this.nodeSet;
+	public ENodeGroup getNodeGroup() {
+		return this.nodeGroup;
 	}
 
-	public void setNodeSet(ENodeSet nodeSet) {
-		this.nodeSet = nodeSet;
+	public void setNodeGroup(ENodeGroup nodeGroup) {
+		this.nodeGroup = nodeGroup;
 	}
 
 //	public ENodeSet addNodeSet(ENodeSet nodeSet) {

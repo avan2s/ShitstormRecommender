@@ -5,7 +5,7 @@
 		<class>shitstorm.persistence.entities.EEvidence</class>
 		<class>shitstorm.persistence.entities.EGoal</class>
 		<class>shitstorm.persistence.entities.ENode</class>
-		<class>shitstorm.persistence.entities.ENodeSet</class>
+		<class>shitstorm.persistence.entities.ENodeGroup</class>
 		<class>shitstorm.persistence.entities.EProcess</class>
 		<class>shitstorm.persistence.entities.EProcessinstance</class>
 		<class>shitstorm.persistence.entities.EProcessvariable</class>

@@ -14,14 +14,14 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="node_set")
-@NamedQuery(name="ENodeSet.findAll", query="SELECT e FROM ENodeSet e")
-public class ENodeSet implements Serializable {
+@Table(name="node_group")
+@NamedQuery(name="ENodeSet.findAll", query="SELECT e FROM ENodeGroup e")
+public class ENodeGroup implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idNodeFocus;
+	private int idNodeGroup;
 
 	@Column(name="node_abbreviation")
 	private String nodeAbbreviation;
@@ -31,7 +31,7 @@ public class ENodeSet implements Serializable {
 	private NodeFocus nodeFocus;
 
 	//bi-directional many-to-one association to ENode
-	@OneToMany(mappedBy="nodeSet")
+	@OneToMany(mappedBy="nodeGroup")
 	private List<ENode> nodes;
 
 	//bi-directional many-to-one association to EGoal
@@ -51,16 +51,16 @@ public class ENodeSet implements Serializable {
 	@JoinColumn(name="task_id")
 	private ETask task;
 
-	public ENodeSet() {
+	public ENodeGroup() {
 		this.nodes = new ArrayList<>();
 	}
 
-	public int getIdNodeFocus() {
-		return this.idNodeFocus;
+	public int getIdNodeGroup() {
+		return this.idNodeGroup;
 	}
 
-	public void setIdNodeFocus(int idNodeFocus) {
-		this.idNodeFocus = idNodeFocus;
+	public void setIdNodeGroup(int idNodeGroup) {
+		this.idNodeGroup = idNodeGroup;
 	}
 
 	public String getNodeAbbreviation() {
@@ -89,14 +89,14 @@ public class ENodeSet implements Serializable {
 
 	public ENode addNode(ENode node) {
 		getNodes().add(node);
-		node.setNodeSet(this);
+		node.setNodeGroup(this);
 
 		return node;
 	}
 
 	public ENode removeNode(ENode node) {
 		getNodes().remove(node);
-		node.setNodeSet(null);
+		node.setNodeGroup(null);
 
 		return node;
 	}

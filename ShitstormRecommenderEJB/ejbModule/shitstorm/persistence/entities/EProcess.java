@@ -60,6 +60,9 @@ public class EProcess implements Serializable {
 	//bi-directional many-to-one association to ETask
 	@OneToMany(mappedBy="process")
 	private List<ETask> tasks;
+	
+	@OneToMany(mappedBy="process")
+	private List<ENode> nodes;
 
 	public EProcess() {
 		this.goals = new ArrayList<>();
@@ -170,6 +173,14 @@ public class EProcess implements Serializable {
 
 	public List<ETask> getTasks() {
 		return this.tasks;
+	}
+
+	public List<ENode> getNodes() {
+		return nodes;
+	}
+
+	public void setNodes(List<ENode> nodes) {
+		this.nodes = nodes;
 	}
 
 	public void setTasks(List<ETask> tasks) {

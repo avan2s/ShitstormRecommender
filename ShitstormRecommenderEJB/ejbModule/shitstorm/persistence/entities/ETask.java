@@ -29,7 +29,7 @@ public class ETask implements Serializable {
 
 	//bi-directional many-to-one association to ENodeSet
 	@OneToOne(mappedBy="task")
-	private ENodeSet nodeSet;
+	private ENodeGroup nodeSet;
 
 	//bi-directional many-to-one association to EProcess
 	@ManyToOne
@@ -68,11 +68,11 @@ public class ETask implements Serializable {
 		this.taskName = taskName;
 	}
 
-	public ENodeSet getNodeSet() {
+	public ENodeGroup getNodeSet() {
 		return this.nodeSet;
 	}
 
-	public void setNodeSet(ENodeSet nodeSet) {
+	public void setNodeSet(ENodeGroup nodeSet) {
 		this.nodeSet = nodeSet;
 	}
 

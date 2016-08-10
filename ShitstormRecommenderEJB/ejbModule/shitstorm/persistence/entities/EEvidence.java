@@ -44,6 +44,10 @@ public class EEvidence implements Serializable {
 	// bi-directional one-to-one association to ETakenDecision
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "evidence", fetch = FetchType.EAGER)
 	private ETakenDecision takenDecision;
+	
+	@ManyToOne
+	@JoinColumn(name="processinstance_id")
+	private EProcessinstance processinstance;
 
 	public EEvidence() {
 	}
@@ -86,6 +90,14 @@ public class EEvidence implements Serializable {
 
 	public void setTakenDecision(ETakenDecision takenDecision) {
 		this.takenDecision = takenDecision;
+	}
+
+	public EProcessinstance getProcessinstance() {
+		return processinstance;
+	}
+
+	public void setProcessinstance(EProcessinstance processinstance) {
+		this.processinstance = processinstance;
 	}
 
 }

@@ -44,7 +44,7 @@ public class EProcessvariable implements Serializable {
 	// bi-directional many-to-one association to ENodeSet
 	// @OneToMany(mappedBy="processvariable")
 	@OneToOne(mappedBy = "processvariable")
-	private ENodeSet nodeSet;
+	private ENodeGroup nodeGroup;
 
 	// bi-directional many-to-one association to EProcess
 	@ManyToOne
@@ -78,12 +78,8 @@ public class EProcessvariable implements Serializable {
 		this.variableName = variableName;
 	}
 
-	public ENodeSet getNodeSet() {
-		return this.nodeSet;
-	}
-
-	public void setNodeSets(ENodeSet nodeSet) {
-		this.nodeSet = nodeSet;
+	public ENodeGroup getNodeGroup() {
+		return this.nodeGroup;
 	}
 
 	// public ENodeSet addNodeSet(ENodeSet nodeSet) {
@@ -108,8 +104,8 @@ public class EProcessvariable implements Serializable {
 		this.variableType = variableType;
 	}
 
-	public void setNodeSet(ENodeSet nodeSet) {
-		this.nodeSet = nodeSet;
+	public void setNodeGroup(ENodeGroup nodeGroup) {
+		this.nodeGroup = nodeGroup;
 	}
 
 	public EProcess getProcess() {

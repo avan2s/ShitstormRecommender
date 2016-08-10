@@ -15,38 +15,37 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 /**
  * The persistent class for the node database table.
  * 
  */
 @Entity
-@Table(name="node")
-@NamedQuery(name="ENode.findAll", query="SELECT e FROM ENode e")
+@Table(name = "node")
+@NamedQuery(name = "ENode.findAll", query = "SELECT e FROM ENode e")
 public class ENode implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idNode;
 
-	@Column(name="node_name")
+	@Column(name = "node_name")
 	private String nodeName;
 
 	private int period;
 
-	//bi-directional many-to-one association to EEvidence
-	@OneToMany(mappedBy="node")
+	// bi-directional many-to-one association to EEvidence
+	@OneToMany(mappedBy = "node")
 	private List<EEvidence> evidences;
 
-	//bi-directional many-to-one association to ENodeSet
+	// bi-directional many-to-one association to ENodeSet
 	@ManyToOne
-	@JoinColumn(name="node_focus_id")
-	private ENodeSet nodeSet;
-	
+	@JoinColumn(name = "node_group_id")
+	private ENodeGroup nodeGroup;
+
 	@ManyToOne
-	@JoinColumn(name="processinstance_id")
-	private EProcessinstance processinstance;
+	@JoinColumn(name = "process_id")
+	private EProcess process;
 
 	public ENode() {
 		this.evidences = new ArrayList<>();
@@ -98,20 +97,20 @@ public class ENode implements Serializable {
 		return evidence;
 	}
 
-	public ENodeSet getNodeSet() {
-		return this.nodeSet;
+	public ENodeGroup getNodeGroup() {
+		return this.nodeGroup;
 	}
 
-	public void setNodeSet(ENodeSet nodeSet) {
-		this.nodeSet = nodeSet;
+	public void setNodeGroup(ENodeGroup nodeGroup) {
+		this.nodeGroup = nodeGroup;
 	}
 
-	public EProcessinstance getProcessinstance() {
-		return processinstance;
+	public EProcess getProcess() {
+		return process;
 	}
 
-	public void setProcessinstance(EProcessinstance processinstance) {
-		this.processinstance = processinstance;
+	public void setProcess(EProcess process) {
+		this.process = process;
 	}
 
 }

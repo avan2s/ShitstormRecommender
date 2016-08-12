@@ -7,6 +7,7 @@ import javax.ejb.Startup;
 
 import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.IProcessDAO;
+import smile.Network;
 
 @Singleton
 @Startup
@@ -35,6 +36,7 @@ public class InitializationBean {
 
 	@PostConstruct
 	private void initialize() {
+		Network network = new Network();
 		// System.setProperty("java.library.path", "D:/Development/dlls");
 		// System.loadLibrary("jsmile");
 		// Network net = new Network();

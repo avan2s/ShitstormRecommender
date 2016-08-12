@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -23,8 +24,13 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "evidence")
-@NamedQuery(name = "EEvidence.findAll", query = "SELECT e FROM EEvidence e")
+@NamedQueries({
+		@NamedQuery(name = EEvidence.QUERY_GET_BY_PROCESSINSTANCE_NEWEST, query = "SELECT e FROM EEvidence e JOIN e.processinstance pi WHERE pi.refInProcessengine= :refInstance AND e.created IN (SELECT max(e1.created) FROM EEvidence e1 GROUP BY e1.processinstance,e1.node)"),
+		@NamedQuery(name = EEvidence.QUERY_GETALL, query = "SELECT e FROM EEvidence e") })
 public class EEvidence implements Serializable {
+	public static final String QUERY_GETALL = "EEvidence.findAll";
+	public static final String QUERY_GET_BY_PROCESSINSTANCE_NEWEST = "EEvidence.getByProcessinstanceNewest";
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -44,9 +50,9 @@ public class EEvidence implements Serializable {
 	// bi-directional one-to-one association to ETakenDecision
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "evidence", fetch = FetchType.EAGER)
 	private ETakenDecision takenDecision;
-	
+
 	@ManyToOne
-	@JoinColumn(name="processinstance_id")
+	@JoinColumn(name = "processinstance_id")
 	private EProcessinstance processinstance;
 
 	public EEvidence() {

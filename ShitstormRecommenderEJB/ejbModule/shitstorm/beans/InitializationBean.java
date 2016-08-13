@@ -5,6 +5,8 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
+import ilog.concert.IloException;
+import ilog.cplex.IloCplex;
 import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.IProcessDAO;
 import smile.Network;
@@ -12,18 +14,18 @@ import smile.Network;
 @Singleton
 @Startup
 public class InitializationBean {
-	
-//	static
-//	{
-//	    try {
-//	        System.loadLibrary("JCoreImpl");
-//	        System.out.println("JCoreImpl loaded");
-//	        m_bLibraryLoaded = true;
-//	    } catch (UnsatisfiedLinkError e) {
-//	        m_bLibraryLoaded = false;
-//	        System.out.println("JCoreImpl NOT loaded " + e);
-//	    }
-//	}
+
+	// static
+	// {
+	// try {
+	// System.loadLibrary("JCoreImpl");
+	// System.out.println("JCoreImpl loaded");
+	// m_bLibraryLoaded = true;
+	// } catch (UnsatisfiedLinkError e) {
+	// m_bLibraryLoaded = false;
+	// System.out.println("JCoreImpl NOT loaded " + e);
+	// }
+	// }
 
 	@EJB
 	private IGoalDAO goalDao;
@@ -37,10 +39,18 @@ public class InitializationBean {
 	@PostConstruct
 	private void initialize() {
 		Network network = new Network();
+		try {
+			IloCplex cplex = new IloCplex();
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// System.setProperty("java.library.path", "D:/Development/dlls");
 		// System.loadLibrary("jsmile");
 		// Network net = new Network();
-		//this.nodeRegistrator.registerNodesForInfluenceDiagram("shitstorm.xdsl");
+		for (int i = 0; i <= 100000; i++) {
+			this.nodeRegistrator.registerNodesForInfluenceDiagram("process", "shitstorm.xdsl");
+		}
 
 		//
 		// if (goalDao.readAll().size() == 0) {

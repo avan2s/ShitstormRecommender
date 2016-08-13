@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Dependencies: org.smile export
+Dependencies: org.smile export,org.cplex export,org.kiptools export

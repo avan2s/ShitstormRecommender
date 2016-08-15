@@ -41,9 +41,8 @@ public class EProcessvariable implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private VariableType variableType;
 
-	// bi-directional many-to-one association to ENodeSet
-	// @OneToMany(mappedBy="processvariable")
-	@OneToOne(mappedBy = "processvariable")
+	@OneToOne
+	@JoinColumn(name="node_group_id")
 	private ENodeGroup nodeGroup;
 
 	// bi-directional many-to-one association to EProcess

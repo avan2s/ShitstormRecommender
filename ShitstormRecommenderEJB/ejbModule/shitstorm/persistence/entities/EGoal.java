@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -39,10 +38,8 @@ public class EGoal implements Serializable {
 
 	private String goalFigure;
 
-	//bi-directional many-to-one association to ENodeSet
-//	@OneToMany(mappedBy="goal")
-//	private List<ENodeSet> nodeSets;
-	@OneToOne(cascade=CascadeType.ALL, mappedBy="goal", fetch=FetchType.EAGER)
+	@OneToOne
+	@JoinColumn(name="node_group_id")
 	private ENodeGroup nodeGroup;
 
 	//bi-directional many-to-many association to EProcess

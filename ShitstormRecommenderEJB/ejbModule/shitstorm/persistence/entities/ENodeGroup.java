@@ -41,21 +41,14 @@ public class ENodeGroup implements Serializable {
 	@OneToMany(mappedBy="nodeGroup")
 	private List<ENode> nodes;
 
-	//bi-directional many-to-one association to EGoal
-	//@ManyToOne
-	@OneToOne
-	@JoinColumn(name="goal_id")
+	@OneToOne(mappedBy="nodeGroup", fetch=FetchType.EAGER)
 	private EGoal goal;
 
-	//bi-directional many-to-one association to EProcessvariable
-	//@ManyToOne
-	@OneToOne
-	@JoinColumn(name="processvariable_id")
+	@OneToOne(mappedBy="nodeGroup", fetch=FetchType.EAGER)	
 	private EProcessvariable processvariable;
 
 	//bi-directional many-to-one association to ETask
-	@OneToOne
-	@JoinColumn(name="task_id")
+	@OneToOne(mappedBy="nodeGroup", fetch=FetchType.EAGER)
 	private ETask task;
 
 	public ENodeGroup() {

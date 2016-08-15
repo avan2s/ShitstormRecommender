@@ -15,9 +15,16 @@ import java.util.List;
  */
 @Entity
 @Table(name="node_group")
-@NamedQuery(name="ENodeSet.findAll", query="SELECT e FROM ENodeGroup e")
+@NamedQueries({
+	@NamedQuery(name=ENodeGroup.QUERY_GETALL, query="SELECT e FROM ENodeGroup e"),
+	@NamedQuery(name=ENodeGroup.QUERY_GET_BY_ABBREVIATION_AND_PROCESS, 
+	query="SELECT ng FROM ENodeGroup ng JOIN ng.nodes n JOIN n.process p WHERE ng.nodeAbbreviation=:abbreviation AND p.refInProcessengine=:refProcess")
+	})
+
 public class ENodeGroup implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String QUERY_GETALL = "ENodeGroup.findAll";
+	public static final String QUERY_GET_BY_ABBREVIATION_AND_PROCESS = "ENodeGroup.GET_BY_ABBREVIATION_AND_PROCESS";
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

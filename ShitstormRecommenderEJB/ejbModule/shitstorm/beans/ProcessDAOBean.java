@@ -13,8 +13,11 @@ public class ProcessDAOBean extends GenericDAOImpl<EProcess, Integer> implements
 
 	@Override
 	public EProcess findByReferenceInProcessEngine(String reference) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return this.em.createNamedQuery(EProcess.QUERY_GET_BY_REF, EProcess.class).setParameter("ref", reference).getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

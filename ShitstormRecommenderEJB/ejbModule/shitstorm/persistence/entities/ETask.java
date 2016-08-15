@@ -76,20 +76,6 @@ public class ETask implements Serializable {
 		this.nodeSet = nodeSet;
 	}
 
-//	public ENodeSet addNodeSet(ENodeSet nodeSet) {
-//		getNodeSets().add(nodeSet);
-//		nodeSet.setTask(this);
-//
-//		return nodeSet;
-//	}
-//
-//	public ENodeSet removeNodeSet(ENodeSet nodeSet) {
-//		getNodeSets().remove(nodeSet);
-//		nodeSet.setTask(null);
-//
-//		return nodeSet;
-//	}
-
 	public EProcess getProcess() {
 		return this.process;
 	}

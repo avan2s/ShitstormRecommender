@@ -13,9 +13,15 @@ import java.util.List;
  */
 @Entity
 @Table(name="process")
-@NamedQuery(name="EProcess.findAll", query="SELECT e FROM EProcess e")
+@NamedQueries({
+		@NamedQuery(name=EProcess.QUERY_GET_ALL, query="SELECT e FROM EProcess e"),
+		@NamedQuery(name=EProcess.QUERY_GET_BY_REF,query="SELECT e FROM EProcess e WHERE e.refInProcessengine=:ref")
+		})
+
 public class EProcess implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String QUERY_GET_ALL = "EProcess.findAll";
+	public static final String QUERY_GET_BY_REF = "EProcess.getByRef";
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,6 +35,12 @@ public class EProcess implements Serializable {
 
 	@Column(name="influence_diagram_period_seperator")
 	private String influenceDiagramPeriodSeperator;
+	
+	@Column(name="influence_diagram_instance_period")
+	private String influenceDiagramInstancePeriod;
+	
+	@Column(name="influence_diagram_decision_abbreviation")
+	private String influenceDiagramDecisionAbbreviation;
 
 	@Column(name="process_name")
 	private String processName;
@@ -61,7 +73,7 @@ public class EProcess implements Serializable {
 	@OneToMany(mappedBy="process")
 	private List<ETask> tasks;
 	
-	@OneToMany(mappedBy="process")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="process")
 	private List<ENode> nodes;
 
 	public EProcess() {
@@ -69,6 +81,7 @@ public class EProcess implements Serializable {
 		this.processinstances = new ArrayList<>();
 		this.processvariables = new ArrayList<>();
 		this.tasks = new ArrayList<>();
+		this.nodes = new ArrayList<>();
 	}
 
 	public int getIdProcess() {
@@ -131,8 +144,24 @@ public class EProcess implements Serializable {
 		return this.processinstances;
 	}
 
+	public String getInfluenceDiagramDecisionAbbreviation() {
+		return influenceDiagramDecisionAbbreviation;
+	}
+
+	public void setInfluenceDiagramDecisionAbbreviation(String influenceDiagramDecisionAbbreviation) {
+		this.influenceDiagramDecisionAbbreviation = influenceDiagramDecisionAbbreviation;
+	}
+
 	public void setProcessinstances(List<EProcessinstance> processinstances) {
 		this.processinstances = processinstances;
+	}
+
+	public String getInfluenceDiagramInstancePeriod() {
+		return influenceDiagramInstancePeriod;
+	}
+
+	public void setInfluenceDiagramInstancePeriod(String influenceDiagramInstancePeriod) {
+		this.influenceDiagramInstancePeriod = influenceDiagramInstancePeriod;
 	}
 
 	public EProcessinstance addProcessinstance(EProcessinstance processinstance) {
@@ -185,6 +214,20 @@ public class EProcess implements Serializable {
 
 	public void setTasks(List<ETask> tasks) {
 		this.tasks = tasks;
+	}
+	
+	public ENode addNode(ENode node){
+		getNodes().add(node);
+		node.setProcess(this);
+		
+		return node;
+	}
+	
+	public ENode removeNode(ENode node) {
+		getNodes().remove(node);
+		node.setProcess(null);
+
+		return node;
 	}
 
 	public ETask addTask(ETask task) {

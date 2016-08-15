@@ -1,15 +1,16 @@
 package shitstorm.beans;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.persistence.NoResultException;
 
-import ilog.concert.IloException;
-import ilog.cplex.IloCplex;
 import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.IProcessDAO;
-import smile.Network;
 
 @Singleton
 @Startup
@@ -34,23 +35,25 @@ public class InitializationBean {
 	private IProcessDAO processDAO;
 
 	@EJB
-	private NodeRegistratorBean nodeRegistrator;
+	private RegistratorBean registrator;
 
 	@PostConstruct
 	private void initialize() {
-		Network network = new Network();
 		try {
-			IloCplex cplex = new IloCplex();
-		} catch (IloException e) {
+			this.registrator.registerProcess("shitstorm", "shitstorm-ref", "shitstorm.xdsl", "_", "I","E");
+		} catch (NoResultException | FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		// System.setProperty("java.library.path", "D:/Development/dlls");
 		// System.loadLibrary("jsmile");
 		// Network net = new Network();
-		for (int i = 0; i <= 100000; i++) {
-			this.nodeRegistrator.registerNodesForInfluenceDiagram("process", "shitstorm.xdsl");
-		}
+		
 
 		//
 		// if (goalDao.readAll().size() == 0) {

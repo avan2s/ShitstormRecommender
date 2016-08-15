@@ -4,6 +4,6 @@ public enum NodeFocus {
 	DECISION,
 	GOAL,
 	TASK,
-	PROCESSVARIABLE,
-	OTHER
+	VARIABLE,
+	UNKNOWN
 }

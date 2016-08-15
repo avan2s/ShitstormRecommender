@@ -39,13 +39,42 @@ public class ETakenDecision implements Serializable {
 	public ETakenDecision() {
 	}
 
-//	public int getIdTakenDecision() {
-//		return this.idTakenDecision;
-//	}
-//
-//	public void setIdTakenDecision(int idTakenDecision) {
-//		this.idTakenDecision = idTakenDecision;
-//	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((decisionDate == null) ? 0 : decisionDate.hashCode());
+		result = prime * result + ((decisionName == null) ? 0 : decisionName.hashCode());
+		result = prime * result + ((evidence == null) ? 0 : evidence.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ETakenDecision other = (ETakenDecision) obj;
+		if (decisionDate == null) {
+			if (other.decisionDate != null)
+				return false;
+		} else if (!decisionDate.equals(other.decisionDate))
+			return false;
+		if (decisionName == null) {
+			if (other.decisionName != null)
+				return false;
+		} else if (!decisionName.equals(other.decisionName))
+			return false;
+		if (evidence == null) {
+			if (other.evidence != null)
+				return false;
+		} else if (!evidence.equals(other.evidence))
+			return false;
+		return true;
+	}
 
 	public Date getDecisionDate() {
 		return this.decisionDate;

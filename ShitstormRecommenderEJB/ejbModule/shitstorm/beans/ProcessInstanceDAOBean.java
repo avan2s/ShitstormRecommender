@@ -10,7 +10,7 @@ import shitstorm.pojos.GenericDAOImpl;
 
 @Stateless
 @Local(IProcessInstanceDAO.class)
-public class ProcessInstanceDAO extends GenericDAOImpl<EProcessinstance, Integer> implements IProcessInstanceDAO {
+public class ProcessInstanceDAOBean extends GenericDAOImpl<EProcessinstance, Integer> implements IProcessInstanceDAO {
 
 	@Override
 	public EProcessinstance findByRefInProcessEngine(String refInstanceInProcessEngine) {

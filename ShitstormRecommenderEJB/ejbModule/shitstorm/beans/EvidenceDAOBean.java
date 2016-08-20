@@ -19,7 +19,5 @@ public class EvidenceDAOBean extends GenericDAOImpl<EEvidence, Integer> implemen
 				.setParameter("refInstance", refInstanceInProcessEngine).getResultList();
 
 	}
-	
-	
 
 }

@@ -51,7 +51,7 @@ public class ProcessRegistratorBean {
 			process.setRefInProcessengine(refInProcessEngine);
 
 			// Einflussdiagramm auf Existenz prüfen
-			String filePath = "./" + Constants.INFLUENCE_DIAGRAM_DIR_FOR_PROCESS + processName + "/"
+			String filePath = Constants.INFLUENCE_DIAGRAM_DIR_FOR_PROCESS + processName + File.separator
 					+ influenceDiagramFilename;
 			File file = new File(filePath);
 			if (!file.exists()) {
@@ -88,7 +88,7 @@ public class ProcessRegistratorBean {
 		// + process.getInfluenceDiagramFilename();
 		// this.network.readFile(fullPath);
 
-		this.influenceDiagramLoader.loadInfluenceDiagramFromProcess(refProcess);
+		this.network = this.influenceDiagramLoader.loadInfluenceDiagramFromProcess(refProcess);
 
 		// Jeden ausgelesenen Knoten mit zugehöriger Gruppe in Datenbank
 		// speichern und dem Einflussdiagramm des Processes zuordnen

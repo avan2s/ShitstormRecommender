@@ -50,7 +50,7 @@ public class EvidenceRegistratorBean {
 				throw new ProcessInstanceNotSupportedException(refProcessInstance);
 			}
 			String refProcess = processinstance.getProcess().getRefInProcessengine();
-			ENode node = this.daoNode.findByProcessAndVariableRef(refProcess, refVar);
+			ENode node = this.daoNode.findByProcessAndVariableRef(refProcess, refVar, processinstance.getCurrentPeriod());
 
 			EEvidence evidence = new EEvidence();
 			evidence.setNode(node);
@@ -78,7 +78,7 @@ public class EvidenceRegistratorBean {
 			}
 
 			String refProcess = processinstance.getProcess().getRefInProcessengine();
-			ENode node = this.daoNode.findByProcessAndTaskRef(refProcess, refTask);
+			ENode node = this.daoNode.findByProcessAndTaskRef(refProcess, refTask, processinstance.getCurrentPeriod());
 
 			EEvidence evidence = new EEvidence();
 			evidence.setNode(node);

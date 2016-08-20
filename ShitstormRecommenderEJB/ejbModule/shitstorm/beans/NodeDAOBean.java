@@ -35,28 +35,29 @@ public class NodeDAOBean extends GenericDAOImpl<ENode, Integer> implements INode
 	}
 
 	@Override
-	public ENode findByProcessAndVariableRef(String refProcess, String refVariable) {
+	public ENode findByProcessAndVariableRef(String refProcess, String refVariable, int period) {
 		try {
-			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_VARIABLE, ENode.class)
-					.setParameter("refVariable", refVariable).setParameter("refProcess", refProcess).getSingleResult();
+			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_VARIABLE_AND_PERIOD, ENode.class)
+					.setParameter("refVariable", refVariable).setParameter("refProcess", refProcess)
+					.setParameter("period", period).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 
 	}
 
-	@Override
-	public ENode findByProcessAndTaskRef(String refProcess, String refTask) {
-		try {
-			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_TASK, ENode.class)
-					.setParameter("refTask", refTask).setParameter("refProcess", refProcess).getSingleResult();
-		} catch (NoResultException e) {
-			return null;
-		}
-	}
+//	@Override
+//	public ENode findByProcessAndTaskRef(String refProcess, String refTask) {
+//		try {
+//			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_TASK, ENode.class)
+//					.setParameter("refTask", refTask).setParameter("refProcess", refProcess).getSingleResult();
+//		} catch (NoResultException e) {
+//			return null;
+//		}
+//	}
 
 	@Override
-	public ENode find(String refProcess, String refTask, int period) {
+	public ENode findByProcessAndTaskRef(String refProcess, String refTask, int period) {
 		try {
 			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_TASK_AND_PERIOD, ENode.class)
 					.setParameter("refTask ", refTask).setParameter("refProcess", refProcess)

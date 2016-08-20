@@ -20,13 +20,13 @@ import shitstorm.persistence.entities.EProcessinstance;
 @Stateless
 @LocalBean
 public class ProcessInstanceRegistratorBean {
-	
+
 	@EJB
 	IProcessDAO daoProcess;
-	
+
 	@EJB
 	IProcessInstanceDAO daoProcessInstance;
-	
+
 	public EProcessinstance registerProcessInstance(String refProcess, String refProcessInstance)
 			throws IOException, ProcessNotSupportedException {
 		EProcess process = this.daoProcess.findByReferenceInProcessEngine(refProcess);
@@ -43,9 +43,8 @@ public class ProcessInstanceRegistratorBean {
 					.append(".xdsl").toString();
 
 			String diagramForInstance = new StringBuilder(Constants.INFLUENCE_DIAGRAM_DIR_FOR_PROCESS)
-					.append(File.separator).append(process.getProcessName()).append("/").append(refProcessInstance)
-					.append(File.separator).append(refProcessInstance).append(File.separator).append(instanceFilename)
-					.toString();
+					.append(process.getProcessName()).append(File.separator).append(refProcessInstance)
+					.append(File.separator).append(instanceFilename).toString();
 
 			// Einflussdiagramm des Prozesses von
 			// influencedDiagrams/<processname> kopieren nach
@@ -58,7 +57,7 @@ public class ProcessInstanceRegistratorBean {
 				Path targetPath = Paths.get(diagramForInstance);
 				Files.copy(sourcePath, targetPath);
 			}
-			
+
 			// Prozessinstanzobjekt anlegen
 			EProcessinstance processInstance = new EProcessinstance();
 			processInstance.setRefInProcessengine(refProcessInstance);

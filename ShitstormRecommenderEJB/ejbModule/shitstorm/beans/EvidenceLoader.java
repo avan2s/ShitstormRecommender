@@ -11,6 +11,7 @@ import kip.tools.EvidenceSetter;
 import kip.tools.InfluenceDiagramNetwork;
 import kip.tools.exception.ValueNotReadableException;
 import kip.tools.model.KipEvidence;
+import shitstorm.interfaces.IEvidenceDAO;
 import shitstorm.interfaces.IEvidenceLoader;
 import shitstorm.persistence.entities.EEvidence;
 import shitstorm.pojos.GenericDAOImpl;
@@ -19,7 +20,7 @@ import shitstorm.pojos.GenericDAOImpl;
 @Local(IEvidenceLoader.class)
 public class EvidenceLoader extends GenericDAOImpl<EEvidence, Integer> implements IEvidenceLoader {
 	@EJB
-	EvidenceDAOBean daoEvidence;
+	IEvidenceDAO daoEvidence;
 	
 	private EvidenceSetter evidenceSetter;
 	

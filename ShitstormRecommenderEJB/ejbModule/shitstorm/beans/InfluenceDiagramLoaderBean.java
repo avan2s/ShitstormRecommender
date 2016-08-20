@@ -10,6 +10,7 @@ import kip.tools.InfluenceDiagramNetwork;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
 import shitstorm.interfaces.IProcessDAO;
+import shitstorm.interfaces.IProcessInstanceDAO;
 import shitstorm.persistence.entities.EProcess;
 import shitstorm.persistence.entities.EProcessinstance;
 
@@ -20,7 +21,7 @@ public class InfluenceDiagramLoaderBean{
 	IProcessDAO daoProcess;
 
 	@EJB
-	ProcessInstanceDAO processInstanceDAO;
+	IProcessInstanceDAO processInstanceDAO;
 
 	@EJB
 	ProcessInstanceRegistratorBean processInstanceRegistrator;
@@ -65,6 +66,7 @@ public class InfluenceDiagramLoaderBean{
 		// Einflussdiagramm auslesen
 		String fullPath = process.getInfluenceDiagramPath() + File.separator + process.getInfluenceDiagramFilename();
 		network.readFile(fullPath);
+		network.updateBeliefs();
 		return network;
 	}
 }

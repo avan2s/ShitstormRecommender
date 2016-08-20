@@ -7,6 +7,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,7 +30,6 @@ import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.INodeDAO;
 import shitstorm.interfaces.IRecommendation;
 import shitstorm.persistence.entities.EGoal;
-import shitstorm.persistence.entities.EProcess;
 import shitstorm.persistence.entities.EProcessinstance;
 import shitstorm.pojos.dto.GoalRequest;
 import shitstorm.pojos.dto.NextBestActionRecommendation;
@@ -38,7 +39,7 @@ import shitstorm.pojos.dto.TaskInformation;
 
 @Stateless
 @Remote(IRecommendation.class)
-@WebService(serviceName = "RecommendationService")
+@WebService(serviceName = "PrescriptiveService")
 public class RecommenderBean implements IRecommendation {
 
 	private InfluenceDiagramNetwork network;
@@ -69,10 +70,14 @@ public class RecommenderBean implements IRecommendation {
 	DecisionRegistratorBean decisionRegistrator;
 
 	@Override
-	public String registerDecision(String refProcessInProcessEngine, String refProcessInstanceInProcessEngine,
-			String taskRefForTakenDecision, List<ProcessvariableInformation> variableInformation,
-			List<TaskInformation> taskInformation) throws ProcessNotSupportedException, IOException,
-			ProcessInstanceNotSupportedException, TaskNotFoundException {
+	@WebResult(name = "responseMessage")
+	public String registerDecision(@WebParam(name = "refProcess") String refProcessInProcessEngine,
+			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
+			@WebParam(name = "refTask") String taskRefForTakenDecision,
+			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
+			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation)
+			throws ProcessNotSupportedException, IOException, ProcessInstanceNotSupportedException,
+			TaskNotFoundException {
 
 		// Prozessinstanzobjekt erhalten (neu registrieren falls noch nicht
 		// angelegt)
@@ -90,10 +95,14 @@ public class RecommenderBean implements IRecommendation {
 	}
 
 	@Override
-	public NextBestActionRecommendation recommendNextAction(String refProcessInProcessEngine,
-			String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
-			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
-			boolean doNothingActionAllowed) throws Exception {
+	@WebResult(name = "nextActionRecommendation")
+	public NextBestActionRecommendation recommendNextAction(
+			@WebParam(name = "refProcess") String refProcessInProcessEngine,
+			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
+			@WebParam(name = "goals") List<GoalRequest> goalRequests,
+			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
+			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation,
+			@WebParam(name = "doNothingActionAllowed") boolean doNothingActionAllowed) throws Exception {
 
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
@@ -125,10 +134,15 @@ public class RecommenderBean implements IRecommendation {
 	}
 
 	@Override
-	public SequenceRecommendation recommendSequence(SequenceType type, int lastRecommendationPeriod,
-			String refProcessInProcessEngine, String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
-			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
-			boolean doNothingActionAllowed) throws Exception {
+	@WebResult(name = "sequenceRecommendation")
+	public SequenceRecommendation recommendSequence(@WebParam(name = "sequenceType") SequenceType type,
+			@WebParam(name = "lastRecommendationPeriod") int lastRecommendationPeriod,
+			@WebParam(name = "refProcess") String refProcessInProcessEngine,
+			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
+			@WebParam(name = "goals") List<GoalRequest> goalRequests,
+			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
+			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation,
+			@WebParam(name = "doNothingActionAllowed") boolean doNothingActionAllowed) throws Exception {
 
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
@@ -216,18 +230,4 @@ public class RecommenderBean implements IRecommendation {
 		}
 		return kipGoals;
 	}
-
-	// private int getLastPeriodWithEvidence(String refInstanceInProcessEngine)
-	// {
-	// String sql = "SELECT max(n.period) FROM ENode n JOIN n.evidences e JOIN
-	// e.processinstance pi WHERE pi.refInProcessengine=:refInstance";
-	// TypedQuery<Integer> query = this.em.createQuery(sql,
-	// Integer.class).setParameter("refInstance",
-	// refInstanceInProcessEngine);
-	// List<Integer> results = query.getResultList();
-	// if (results.size() > 0) {
-	// return results.get(0);
-	// }
-	// return -1;
-	// }
 }

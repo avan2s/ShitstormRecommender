@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,9 +22,18 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "node")
-@NamedQuery(name = "ENode.findAll", query = "SELECT e FROM ENode e")
+@NamedQueries({ @NamedQuery(name = "ENode.findAll", query = "SELECT e FROM ENode e"),
+		@NamedQuery(name = ENode.QUERY_GET_BY_NODENAME, query = "SELECT n FROM ENode n WHERE n.nodeName=:nodeName"),
+		@NamedQuery(name = ENode.QUERY_GET_BY_PROCESS_AND_VARIABLE, query = "SELECT n FROM ENode n JOIN n.process p JOIN n.nodeGroup ng JOIN ng.processvariable v WHERE v.refInProcessengine=:refVariable and p.refInProcessengine=:refProcess"),
+		@NamedQuery(name = ENode.QUERY_GET_BY_PROCESS_AND_TASK, query = "SELECT n FROM ENode n JOIN n.process p JOIN n.nodeGroup ng JOIN ng.task t WHERE t.refInProcessengine=:refTask and p.refInProcessengine=:refProcess"),
+		@NamedQuery(name = ENode.QUERY_GET_BY_PROCESS_AND_TASK_AND_PERIOD, query = "SELECT n FROM ENode n JOIN n.nodeGroup ng JOIN ng.task t JOIN t.process p WHERE t.refInProcessengine = :refTask AND p.refInProcessengine=:refProcess AND n.period=:period") })
 public class ENode implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	public static final String QUERY_GET_BY_NODENAME = "ENode.GET_BY_NODENAME";
+	public static final String QUERY_GET_BY_PROCESS_AND_VARIABLE = "ENode.GET_BY_PROCESS_AND_VARIABLE";
+	public static final String QUERY_GET_BY_PROCESS_AND_TASK = "ENode.GET_BY_PROCESS_AND_TASK";
+	public static final String QUERY_GET_BY_PROCESS_AND_TASK_AND_PERIOD = "ENode.GET_BY_PROCESS_AND_TASK_AND_PERIOD";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

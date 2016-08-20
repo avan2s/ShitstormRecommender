@@ -1,13 +1,9 @@
 package shitstorm.beans;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.persistence.NoResultException;
 
 import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.IProcessDAO;
@@ -16,38 +12,38 @@ import shitstorm.interfaces.IProcessDAO;
 @Startup
 public class InitializationBean {
 
-	// static
-	// {
-	// try {
-	// System.loadLibrary("JCoreImpl");
-	// System.out.println("JCoreImpl loaded");
-	// m_bLibraryLoaded = true;
-	// } catch (UnsatisfiedLinkError e) {
-	// m_bLibraryLoaded = false;
-	// System.out.println("JCoreImpl NOT loaded " + e);
-	// }
-	// }
-
-	@EJB
-	private IGoalDAO goalDao;
-
+	@EJB 
+	IGoalDAO goalDAO; 
+	
 	@EJB
 	private IProcessDAO processDAO;
 
 	@EJB
-	private RegistratorBean registrator;
+	private ProcessInstanceRegistratorBean registrator;
 
 	@PostConstruct
 	private void initialize() {
-		try {
-			this.registrator.registerProcess("shitstorm", "shitstorm-ref", "shitstorm.xdsl", "_", "I","E");
-		} catch (NoResultException | FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//this.goalDAO.findByGoalFigure("Kundenzufriedenheit");
+		
+//		try {
+//			EProcess process =  this.processDAO.findByReferenceInProcessEngine("shitstorm-ref");
+//			EGoal goal = this.goalDao.findByGoalFigure("Kundenzufriedenheit");
+//			if(goal!= null){
+//				//process.getGoals().remove(goal);
+//				process.getGoals().add(goal);
+//			}
+//			
+////			goal.setGoalEffect(GoalEffect.POSITIVE);
+////			goal.setGoalFigure("Informationsgewinn");
+////			process.getGoals().remove(goal);
+//			//goal.getProcesses().add(process);
+//			this.processDAO.update(process);
+//			
+//			//this.registrator.registerProcess("shitstorm", "shitstorm-ref", "shitstorm.xdsl", "_", "I","E",true);
+//		} catch (NoResultException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		
 		// System.setProperty("java.library.path", "D:/Development/dlls");
@@ -112,55 +108,5 @@ public class InitializationBean {
 		// this.initializeTasks();
 		// this.initializeProcessvariables();
 	}
-
-	// private void initializeDummy() {
-	// // Create Dummy Focus - All incoming goals, variables can only
-	// // be created with a NodeFocus, because of 1:1 relationship
-	// // and NodeFocus as primary Key. All goals, variables and tasks, which
-	// // have no abbreviation in the influence diagram until yet, will get the
-	// // dummy as NodeFocus. The allocation can be updatet by the configurator
-	// // of the
-	// // prescritive tool
-	// ENodeFocus nfDummy = new ENodeFocus();
-	// nfDummy.setNodeFocus(NodeFocus.OTHER);
-	// nfDao.create(nfDummy);
-	// }
-	//
-	// private void initializeDecisionFocus() {
-	// // Create Decision Focus - Nodes in Influencediagram are abbreviated
-	// // with E
-	// ENodeFocus nfDecision = new ENodeFocus();
-	// nfDecision.setNodeFocus(NodeFocus.DECISION);
-	// nfDecision.setNodeAbbreviation("E");
-	// nfDao.create(nfDecision);
-	// }
-	//
-	// private void initializeGoals() {
-	// // Create Focus for cost-goals - are abbreviated in Influencediagram
-	// // with K
-	// ENodeFocus nfCost = new ENodeFocus();
-	// nfCost.setNodeFocus(NodeFocus.GOAL);
-	// nfCost.setNodeAbbreviation("K");
-	// nfDao.create(nfCost);
-	//
-	// // Create Focus for time - are abbreviated in Influencediagram with ZA
-	// // (Zeitaufwand)
-	// ENodeFocus nfTime = new ENodeFocus();
-	// nfTime.setNodeFocus(NodeFocus.GOAL);
-	// nfTime.setNodeAbbreviation("ZA");
-	// nfDao.create(nfTime);
-	//
-	// // Create Focus for Customer satisfaction - are abbreviated in
-	// // Influencediagram with KZ (Kundenzufriedenheit)
-	// ENodeFocus nfCustomerSatisfaction = new ENodeFocus();
-	// nfCustomerSatisfaction.setNodeFocus(NodeFocus.GOAL);
-	// nfCustomerSatisfaction.setNodeAbbreviation("ZA");
-	// nfDao.create(nfCustomerSatisfaction);
-	// }
-	//
-	// private void initializeProcessvariables() {
-	//
-	// }
-	//
 
 }

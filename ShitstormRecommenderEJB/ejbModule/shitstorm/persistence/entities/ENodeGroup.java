@@ -8,47 +8,44 @@ import shitstorm.enums.NodeFocus;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * The persistent class for the node_set database table.
  * 
  */
 @Entity
-@Table(name="node_group")
-@NamedQueries({
-	@NamedQuery(name=ENodeGroup.QUERY_GETALL, query="SELECT e FROM ENodeGroup e"),
-	@NamedQuery(name=ENodeGroup.QUERY_GET_BY_ABBREVIATION_AND_PROCESS, 
-	query="SELECT ng FROM ENodeGroup ng JOIN ng.nodes n JOIN n.process p WHERE ng.nodeAbbreviation=:abbreviation AND p.refInProcessengine=:refProcess")
-	})
+@Table(name = "node_group")
+@NamedQueries({ @NamedQuery(name = ENodeGroup.QUERY_GETALL, query = "SELECT e FROM ENodeGroup e"),
+		@NamedQuery(name = ENodeGroup.QUERY_GET_BY_ABBREVIATION_AND_PROCESS, query = "SELECT ng FROM ENodeGroup ng JOIN ng.nodes n JOIN n.process p WHERE ng.nodeAbbreviation=:abbreviation AND p.refInProcessengine=:refProcess") })
 
 public class ENodeGroup implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	public static final String QUERY_GETALL = "ENodeGroup.findAll";
 	public static final String QUERY_GET_BY_ABBREVIATION_AND_PROCESS = "ENodeGroup.GET_BY_ABBREVIATION_AND_PROCESS";
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idNodeGroup;
 
-	@Column(name="node_abbreviation")
+	@Column(name = "node_abbreviation")
 	private String nodeAbbreviation;
 
-	@Column(name="node_focus")
+	@Column(name = "node_focus")
 	@Enumerated(EnumType.STRING)
 	private NodeFocus nodeFocus;
 
-	//bi-directional many-to-one association to ENode
-	@OneToMany(mappedBy="nodeGroup")
+	// bi-directional many-to-one association to ENode
+	@OneToMany(mappedBy = "nodeGroup")
 	private List<ENode> nodes;
 
-	@OneToOne(mappedBy="nodeGroup", fetch=FetchType.EAGER)
+	@OneToOne(mappedBy = "nodeGroup", fetch = FetchType.EAGER)
 	private EGoal goal;
 
-	@OneToOne(mappedBy="nodeGroup", fetch=FetchType.EAGER)	
+	@OneToOne(mappedBy = "nodeGroup", fetch = FetchType.EAGER)
 	private EProcessvariable processvariable;
 
-	//bi-directional many-to-one association to ETask
-	@OneToOne(mappedBy="nodeGroup", fetch=FetchType.EAGER)
+	// bi-directional many-to-one association to ETask
+	@OneToOne(mappedBy = "nodeGroup", fetch = FetchType.EAGER)
 	private ETask task;
 
 	public ENodeGroup() {
@@ -123,6 +120,11 @@ public class ENodeGroup implements Serializable {
 
 	public void setTask(ETask task) {
 		this.task = task;
+	}
+
+	@Override
+	public String toString() {
+		return this.idNodeGroup + ", " + nodeAbbreviation + ", " + nodeFocus;
 	}
 
 }

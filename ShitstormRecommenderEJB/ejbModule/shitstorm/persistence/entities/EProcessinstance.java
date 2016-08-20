@@ -12,9 +12,14 @@ import java.util.List;
  */
 @Entity
 @Table(name = "processinstance")
-@NamedQuery(name = "EProcessinstance.findAll", query = "SELECT e FROM EProcessinstance e")
+@NamedQueries({
+		@NamedQuery(name = EProcessinstance.GET_BY_PROCESSINSTANCE_REF, query = "SELECT i FROM EProcessinstance i WHERE i.refInProcessengine=:refInstance"),
+		@NamedQuery(name = EProcessinstance.GETALL, query = "SELECT e FROM EProcessinstance e") })
 public class EProcessinstance implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	public static final String GETALL = "EProcessinstance.findAll";
+	public static final String GET_BY_PROCESSINSTANCE_REF = "EProcessinstance.GET_BY_PROCESSINSTANCE_REF";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +41,7 @@ public class EProcessinstance implements Serializable {
 	private List<EEvidence> evidences;
 
 	// bi-directional many-to-one association to EProcess
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "process_id")
 	private EProcess process;
 

@@ -6,17 +6,14 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * The persistent class for the process database table.
  * 
  */
 @Entity
-@Table(name="process")
-@NamedQueries({
-		@NamedQuery(name=EProcess.QUERY_GET_ALL, query="SELECT e FROM EProcess e"),
-		@NamedQuery(name=EProcess.QUERY_GET_BY_REF,query="SELECT e FROM EProcess e WHERE e.refInProcessengine=:ref")
-		})
+@Table(name = "process")
+@NamedQueries({ @NamedQuery(name = EProcess.QUERY_GET_ALL, query = "SELECT e FROM EProcess e"),
+		@NamedQuery(name = EProcess.QUERY_GET_BY_REF, query = "SELECT e FROM EProcess e WHERE e.refInProcessengine=:ref") })
 
 public class EProcess implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,56 +21,49 @@ public class EProcess implements Serializable {
 	public static final String QUERY_GET_BY_REF = "EProcess.getByRef";
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idProcess;
 
-	@Column(name="influence_diagram_filename")
+	@Column(name = "influence_diagram_filename")
 	private String influenceDiagramFilename;
 
-	@Column(name="influence_diagram_path")
+	@Column(name = "influence_diagram_path")
 	private String influenceDiagramPath;
 
-	@Column(name="influence_diagram_period_seperator")
+	@Column(name = "influence_diagram_period_seperator")
 	private String influenceDiagramPeriodSeperator;
-	
-	@Column(name="influence_diagram_instance_period")
+
+	@Column(name = "influence_diagram_instance_period")
 	private String influenceDiagramInstancePeriod;
-	
-	@Column(name="influence_diagram_decision_abbreviation")
+
+	@Column(name = "influence_diagram_decision_abbreviation")
 	private String influenceDiagramDecisionAbbreviation;
 
-	@Column(name="process_name")
+	@Column(name = "process_name")
 	private String processName;
 
-	@Column(name="ref_in_processengine")
+	@Column(name = "ref_in_processengine")
 	private String refInProcessengine;
 
-	//bi-directional many-to-many association to EGoal
-	@ManyToMany
-	@JoinTable(
-		name="process_has_goal"
-		, joinColumns={
-			@JoinColumn(name="process_idProcess")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="goal_idGoal")
-			}
-		)
+	// bi-directional many-to-many association to EGoal
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.EAGER)
+	@JoinTable(name = "process_has_goal", joinColumns = {
+			@JoinColumn(name = "process_idProcess") }, inverseJoinColumns = { @JoinColumn(name = "goal_idGoal") })
 	private List<EGoal> goals;
 
-	//bi-directional many-to-one association to EProcessinstance
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="process")
+	// bi-directional many-to-one association to EProcessinstance
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "process")
 	private List<EProcessinstance> processinstances;
 
-	//bi-directional many-to-one association to EProcessvariable
-	@OneToMany(mappedBy="process")
+	// bi-directional many-to-one association to EProcessvariable
+	@OneToMany(mappedBy = "process")
 	private List<EProcessvariable> processvariables;
 
-	//bi-directional many-to-one association to ETask
-	@OneToMany(mappedBy="process")
+	// bi-directional many-to-one association to ETask
+	@OneToMany(mappedBy = "process")
 	private List<ETask> tasks;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="process")
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "process")
 	private List<ENode> nodes;
 
 	public EProcess() {
@@ -215,14 +205,14 @@ public class EProcess implements Serializable {
 	public void setTasks(List<ETask> tasks) {
 		this.tasks = tasks;
 	}
-	
-	public ENode addNode(ENode node){
+
+	public ENode addNode(ENode node) {
 		getNodes().add(node);
 		node.setProcess(this);
-		
+
 		return node;
 	}
-	
+
 	public ENode removeNode(ENode node) {
 		getNodes().remove(node);
 		node.setProcess(null);

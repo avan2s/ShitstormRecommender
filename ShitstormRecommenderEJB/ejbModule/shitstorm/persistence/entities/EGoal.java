@@ -4,50 +4,78 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import shitstorm.enums.GoalEffect;
-
+import kip.enums.KipGoalEffect;
 
 /**
  * The persistent class for the goal database table.
  * 
  */
 @Entity
-@Table(name="goal")
-@NamedQuery(name="EGoal.findAll", query="SELECT e FROM EGoal e")
+@Table(name = "goal")
+@NamedQueries({ @NamedQuery(name = EGoal.QUERY_GETALL, query = "SELECT e FROM EGoal e"),
+		@NamedQuery(name = EGoal.QUERY_GET_BY_GOAL_FIGURE, query = "SELECT g FROM EGoal g WHERE g.goalFigure=:figure") })
 public class EGoal implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public static final String QUERY_GETALL = "EGoal.findAll";
+	public static final String QUERY_GET_BY_GOAL_FIGURE = "EGoal.GET_BY_GOAL_TARGET";
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idGoal;
 
 	@Enumerated(EnumType.STRING)
-	private GoalEffect goalEffect;
+	private KipGoalEffect goalEffect;
 
 	private String goalFigure;
 
-	@OneToOne
-	@JoinColumn(name="node_group_id")
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "node_group_id")
 	private ENodeGroup nodeGroup;
 
-	//bi-directional many-to-many association to EProcess
-	@ManyToMany(mappedBy="goals")
+	// bi-directional many-to-many association to EProcess
+	@ManyToMany(mappedBy = "goals", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	private List<EProcess> processes;
 
 	public EGoal() {
 		this.processes = new ArrayList<>();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EGoal other = (EGoal) obj;
+		if (idGoal != other.idGoal)
+			return false;
+		return true;
+	}
+
+	public boolean isValidForRecommendation() {
+		if (this.goalEffect == null || this.goalFigure == null || this.nodeGroup == null || this.processes == null) {
+			return false;
+		}
+		return true;
 	}
 
 	public int getIdGoal() {
@@ -58,11 +86,11 @@ public class EGoal implements Serializable {
 		this.idGoal = idGoal;
 	}
 
-	public GoalEffect getGoalEffect() {
+	public KipGoalEffect getGoalEffect() {
 		return this.goalEffect;
 	}
 
-	public void setGoalEffect(GoalEffect goalEffect) {
+	public void setGoalEffect(KipGoalEffect goalEffect) {
 		this.goalEffect = goalEffect;
 	}
 
@@ -74,13 +102,6 @@ public class EGoal implements Serializable {
 		this.goalFigure = goalFigure;
 	}
 
-//	public List<ENodeSet> getNodeSets() {
-//		return this.nodeSets;
-//	}
-//
-//	public void setNodeSets(List<ENodeSet> nodeSets) {
-//		this.nodeSets = nodeSets;
-//	}
 	public ENodeGroup getNodeGroup() {
 		return this.nodeGroup;
 	}
@@ -88,20 +109,6 @@ public class EGoal implements Serializable {
 	public void setNodeGroup(ENodeGroup nodeGroup) {
 		this.nodeGroup = nodeGroup;
 	}
-
-//	public ENodeSet addNodeSet(ENodeSet nodeSet) {
-//		getNodeSets().add(nodeSet);
-//		nodeSet.setGoal(this);
-//
-//		return nodeSet;
-//	}
-//
-//	public ENodeSet removeNodeSet(ENodeSet nodeSet) {
-//		getNodeSets().remove(nodeSet);
-//		nodeSet.setGoal(null);
-//
-//		return nodeSet;
-//	}
 
 	public List<EProcess> getProcesses() {
 		return this.processes;

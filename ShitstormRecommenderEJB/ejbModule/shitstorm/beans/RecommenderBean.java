@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ejb.Remote;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -21,88 +18,59 @@ import kip.tools.SequenceCalculator;
 import kip.tools.exception.ValueNotReadableException;
 import kip.tools.model.KipGoal;
 import kip.tools.model.KipSequence;
+import kip.tools.model.NextBestAction;
 import shitstorm.enums.SequenceType;
+import shitstorm.exceptions.PeriodOutOfRangeException;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
-import shitstorm.exceptions.TaskNotFoundException;
 import shitstorm.interfaces.IEvidenceLoader;
 import shitstorm.interfaces.IGoalDAO;
 import shitstorm.interfaces.INodeDAO;
-import shitstorm.interfaces.IRecommendation;
 import shitstorm.persistence.entities.EGoal;
 import shitstorm.persistence.entities.EProcessinstance;
 import shitstorm.pojos.dto.GoalRequest;
-import shitstorm.pojos.dto.NextBestActionRecommendation;
 import shitstorm.pojos.dto.ProcessvariableInformation;
 import shitstorm.pojos.dto.SequenceRecommendation;
 import shitstorm.pojos.dto.TaskInformation;
 
 @Stateless
-@Remote(IRecommendation.class)
-@WebService(serviceName = "PrescriptiveService")
-public class RecommenderBean implements IRecommendation {
+@LocalBean
+public class RecommenderBean {
 
 	private InfluenceDiagramNetwork network;
 	private EProcessinstance processinstance;
 
 	@PersistenceContext
-	EntityManager em;
+	private EntityManager em;
 
 	@EJB
-	ProcessInstanceRegistratorBean processInstanceRegistrator;
+	private ProcessInstanceRegistratorBean processInstanceRegistrator;
 
 	@EJB
-	IGoalDAO daoGoal;
+	private IGoalDAO daoGoal;
 
 	@EJB
-	INodeDAO daoNode;
+	private INodeDAO daoNode;
 
 	@EJB
-	IEvidenceLoader evidenceLoader;
+	private IEvidenceLoader evidenceLoader;
 
 	@EJB
-	EvidenceRegistratorBean evidenceRegistrator;
+	private EvidenceRegistratorBean evidenceRegistrator;
 
 	@EJB
-	InfluenceDiagramLoaderBean influenceDiagramLoader;
+	private InfluenceDiagramLoaderBean influenceDiagramLoader;
 
 	@EJB
-	DecisionRegistratorBean decisionRegistrator;
+	private DecisionRegistratorBean decisionRegistrator;
 
-	@Override
-	@WebResult(name = "responseMessage")
-	public String registerDecision(@WebParam(name = "refProcess") String refProcessInProcessEngine,
-			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
-			@WebParam(name = "refTask") String taskRefForTakenDecision,
-			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
-			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation)
-			throws ProcessNotSupportedException, IOException, ProcessInstanceNotSupportedException,
-			TaskNotFoundException {
+	@EJB
+	private RecommenderResponseBuilder responseBuilder;
 
-		// Prozessinstanzobjekt erhalten (neu registrieren falls noch nicht
-		// angelegt)
-		this.processinstance = this.processInstanceRegistrator.registerProcessInstance(refProcessInProcessEngine,
-				refProcessInstanceInProcessEngine);
-
-		// Neue Evidenzen in die Datenbank überführen
-		this.evidenceRegistrator.registerNewEvidences(this.processinstance.getRefInProcessengine(), variableInformation,
-				taskInformation);
-
-		// Find node By Process Period and abbreviation
-		this.decisionRegistrator.registerTakenDecision(refProcessInstanceInProcessEngine, taskRefForTakenDecision);
-
-		return "Decision registered successfully!";
-	}
-
-	@Override
-	@WebResult(name = "nextActionRecommendation")
-	public NextBestActionRecommendation recommendNextAction(
-			@WebParam(name = "refProcess") String refProcessInProcessEngine,
-			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
-			@WebParam(name = "goals") List<GoalRequest> goalRequests,
-			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
-			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation,
-			@WebParam(name = "doNothingActionAllowed") boolean doNothingActionAllowed) throws Exception {
+	public NextBestAction recommendNextAction(String refProcessInProcessEngine,
+			String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
+			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
+			boolean doNothingActionAllowed) throws Exception {
 
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
@@ -126,23 +94,16 @@ public class RecommenderBean implements IRecommendation {
 		nextActionCalculator.calculateNextBestAction(currentPeriod, periodForRecommendation, kipGoals);
 
 		// Response konstruieren
-		NextBestActionRecommendation response = new NextBestActionRecommendation();
-		response.setNextBestAction(nextActionCalculator.getNextBestAction());
-		response.setSimValues(nextActionCalculator.getSimPeriod());
-
+		NextBestAction nextBestAction = nextActionCalculator.getNextBestAction();
+		String refProcess = this.processinstance.getProcess().getRefInProcessengine();
+		NextBestAction response = this.responseBuilder.build(nextBestAction, refProcess);
 		return response;
 	}
 
-	@Override
-	@WebResult(name = "sequenceRecommendation")
-	public SequenceRecommendation recommendSequence(@WebParam(name = "sequenceType") SequenceType type,
-			@WebParam(name = "lastRecommendationPeriod") int lastRecommendationPeriod,
-			@WebParam(name = "refProcess") String refProcessInProcessEngine,
-			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
-			@WebParam(name = "goals") List<GoalRequest> goalRequests,
-			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
-			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation,
-			@WebParam(name = "doNothingActionAllowed") boolean doNothingActionAllowed) throws Exception {
+	public SequenceRecommendation recommendSequence(SequenceType type, int numberOfDecisions,
+			String refProcessInProcessEngine, String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
+			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
+			boolean doNothingActionAllowed) throws Exception {
 
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
@@ -158,10 +119,18 @@ public class RecommenderBean implements IRecommendation {
 		// Handlungsempfehlung transformieren
 		List<KipGoal> kipGoals = this.constructKipGoalsByGoalRequests(goalRequests);
 
-		// E3 ist die letzte Entscheidungsperiode im Einflussdiagramm. Der
-		// Prototyp ermittelt immer eine Handlungsempfehlungsreihenfolge für
-		// alle zu treffenden Entscheidungen
-		int lastPeriod = lastRecommendationPeriod;
+		// Letzte Periode für eine Entscheidung ermitteln. Bei einer
+		// Entscheidung enspricht die aktuelle Periode der letzten Periode für
+		// eine Handlungsempfehlung
+		int lastPeriod = currentPeriod + numberOfDecisions - 1;
+
+		int lastDecisionPeriodInInfluenceDiagram = processinstance.getProcess().getLastDecisionPeriod();
+
+		// Für den Prototyp
+		if (lastPeriod > lastDecisionPeriodInInfluenceDiagram) {
+			throw new PeriodOutOfRangeException(refProcessInProcessEngine, lastPeriod,
+					lastDecisionPeriodInInfluenceDiagram);
+		}
 
 		// Sequenzcalculator auswählen und konfigurieren
 		SequenceCalculator sequenceCalculator = null;
@@ -177,9 +146,7 @@ public class RecommenderBean implements IRecommendation {
 
 		// Antwort aufbereiten
 		KipSequence kipSequence = sequenceCalculator.getKipSequence();
-		SequenceRecommendation recommendation = new SequenceRecommendation();
-		recommendation.setNextBestActions(kipSequence.getSequence());
-		recommendation.setSimValuesInPeriods(sequenceCalculator.getSimPeriods());
+		SequenceRecommendation recommendation = this.responseBuilder.build(kipSequence, refProcessInProcessEngine);
 		return recommendation;
 	}
 

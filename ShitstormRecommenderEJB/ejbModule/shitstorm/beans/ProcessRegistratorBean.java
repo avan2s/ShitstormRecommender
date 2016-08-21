@@ -103,26 +103,30 @@ public class ProcessRegistratorBean {
 		List<ENode> nodes = new ArrayList<>();
 		String[] allNodeIds = this.network.getAllNodeIds();
 		for (String nodeId : allNodeIds) {
-			int period = this.extractor.extractPeriodFromNodeId(nodeId, false);
+			boolean hasNodeFocus = this.extractor.extractNodeUserProperty(nodeId, "nodefocus") != null;
+			if (hasNodeFocus) {
+				int period = this.extractor.extractPeriodFromNodeId(nodeId, false);
 
-			// Wenn es keine ungültige Periode ist...
-			if (period != -1) {
-				// extrahiere die Abkürzung des Knotens...
-				String abbreviation = this.extractor.extractAbbreviation(nodeId);
-				// und speichere sie in der Datenbank
-				ENodeGroup nodeGroup = this.daoNodeGroup.findByAbbreviationInProcess(process.getRefInProcessengine(),
-						abbreviation);
-				if (nodeGroup == null) {
-					nodeGroup = this.importNodeGroupIntoDatabase(abbreviation, nodeId, includeNodeUserProperties);
-				}
+				// Wenn es keine ungültige Periode ist...
+				if (period != -1) {
+					// extrahiere die Abkürzung des Knotens...
+					String abbreviation = this.extractor.extractAbbreviation(nodeId);
+					// und speichere sie in der Datenbank
+					ENodeGroup nodeGroup = this.daoNodeGroup
+							.findByAbbreviationInProcess(process.getRefInProcessengine(), abbreviation);
+					if (nodeGroup == null) {
+						nodeGroup = this.importNodeGroupIntoDatabase(abbreviation, nodeId, includeNodeUserProperties);
+					}
 
-				// Knoten des Einflussdiagramms anlegen, wenn eine Knotengruppe
-				// existiert
-				ENode node = this.daoNode.findByNodeName(nodeId);
-				if (node == null && nodeGroup != null) {
-					node = this.daoNode.create(nodeId, period, nodeGroup, process);
-					nodes.add(node);
-					process.addNode(node);
+					// Knoten des Einflussdiagramms anlegen, wenn eine
+					// Knotengruppe
+					// existiert
+					ENode node = this.daoNode.findByNodeName(nodeId);
+					if (node == null && nodeGroup != null) {
+						node = this.daoNode.create(nodeId, period, nodeGroup, process);
+						nodes.add(node);
+						process.addNode(node);
+					}
 				}
 			}
 		}
@@ -153,7 +157,8 @@ public class ProcessRegistratorBean {
 			}
 		} else {
 			nodeGroup.setNodeFocus(NodeFocus.UNKNOWN);
+			return this.daoNodeGroup.create(nodeGroup);
 		}
-		return this.daoNodeGroup.create(nodeGroup);
+
 	}
 }

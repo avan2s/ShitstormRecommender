@@ -1,10 +1,16 @@
 package shitstorm.beans;
 
+import java.io.IOException;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
 
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
+import shitstorm.exceptions.ProcessNotSupportedException;
 import shitstorm.exceptions.TaskNotFoundException;
 import shitstorm.interfaces.IEvidenceDAO;
 import shitstorm.interfaces.INodeDAO;
@@ -13,21 +19,55 @@ import shitstorm.persistence.entities.EEvidence;
 import shitstorm.persistence.entities.ENode;
 import shitstorm.persistence.entities.EProcessinstance;
 import shitstorm.persistence.entities.ETakenDecision;
+import shitstorm.pojos.dto.ProcessvariableInformation;
+import shitstorm.pojos.dto.TaskInformation;
 
 @Stateless
 @LocalBean
 public class DecisionRegistratorBean {
 
 	@EJB
-	INodeDAO daoNode;
+	private INodeDAO daoNode;
 
 	@EJB
-	IEvidenceDAO daoEvidence;
+	private IEvidenceDAO daoEvidence;
 
 	@EJB
-	IProcessInstanceDAO daoProcessinstance;
+	private IProcessInstanceDAO daoProcessinstance;
 
-	public ETakenDecision registerTakenDecision(String refInstance, String taskRefForTakenDecision)
+	@EJB
+	private EvidenceRegistratorBean evidenceRegistrator;
+
+	@EJB
+	private ProcessInstanceRegistratorBean processInstanceRegistrator;
+
+	private EProcessinstance processinstance;
+
+	@WebResult(name = "responseMessage")
+	public String registerDecision(@WebParam(name = "refProcess") String refProcessInProcessEngine,
+			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
+			@WebParam(name = "refTask") String taskRefForTakenDecision,
+			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
+			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation)
+			throws ProcessNotSupportedException, IOException, ProcessInstanceNotSupportedException,
+			TaskNotFoundException {
+
+		// Prozessinstanzobjekt erhalten (neu registrieren falls noch nicht
+		// angelegt)
+		this.processinstance = this.processInstanceRegistrator.registerProcessInstance(refProcessInProcessEngine,
+				refProcessInstanceInProcessEngine);
+
+		// Neue Evidenzen in die Datenbank überführen
+		this.evidenceRegistrator.registerNewEvidences(this.processinstance.getRefInProcessengine(), variableInformation,
+				taskInformation);
+
+		// Find node By Process Period and abbreviation
+		this.registerTakenDecision(refProcessInstanceInProcessEngine, taskRefForTakenDecision);
+
+		return "Decision registered successfully!";
+	}
+
+	private ETakenDecision registerTakenDecision(String refInstance, String taskRefForTakenDecision)
 			throws ProcessInstanceNotSupportedException, TaskNotFoundException {
 		EProcessinstance processinstance = this.daoProcessinstance.findByRefInProcessEngine(refInstance);
 		if (processinstance == null) {

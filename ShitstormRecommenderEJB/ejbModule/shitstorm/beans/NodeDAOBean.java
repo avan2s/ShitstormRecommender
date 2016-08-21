@@ -60,7 +60,7 @@ public class NodeDAOBean extends GenericDAOImpl<ENode, Integer> implements INode
 	public ENode findByProcessAndTaskRef(String refProcess, String refTask, int period) {
 		try {
 			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_TASK_AND_PERIOD, ENode.class)
-					.setParameter("refTask ", refTask).setParameter("refProcess", refProcess)
+					.setParameter("refTask", refTask).setParameter("refProcess", refProcess)
 					.setParameter("period", period).getSingleResult();
 		} catch (NoResultException e) {
 			return null;

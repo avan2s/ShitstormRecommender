@@ -39,6 +39,9 @@ public class EProcess implements Serializable {
 	@Column(name = "influence_diagram_decision_abbreviation")
 	private String influenceDiagramDecisionAbbreviation;
 
+	@Column(name = "influence_diagram_last_decision_period")
+	private int lastDecisionPeriod;
+
 	@Column(name = "process_name")
 	private String processName;
 
@@ -152,6 +155,14 @@ public class EProcess implements Serializable {
 
 	public void setInfluenceDiagramInstancePeriod(String influenceDiagramInstancePeriod) {
 		this.influenceDiagramInstancePeriod = influenceDiagramInstancePeriod;
+	}
+
+	public int getLastDecisionPeriod() {
+		return lastDecisionPeriod;
+	}
+
+	public void setLastDecisionPeriod(int lastDecisionPeriod) {
+		this.lastDecisionPeriod = lastDecisionPeriod;
 	}
 
 	public EProcessinstance addProcessinstance(EProcessinstance processinstance) {

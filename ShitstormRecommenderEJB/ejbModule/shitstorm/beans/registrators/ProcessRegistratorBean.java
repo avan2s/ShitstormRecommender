@@ -1,4 +1,4 @@
-package shitstorm.beans;
+package shitstorm.beans.registrators;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,12 +12,13 @@ import javax.persistence.NoResultException;
 
 import kip.tools.InfluenceDiagramElementExtractor;
 import kip.tools.InfluenceDiagramNetwork;
+import shitstorm.beans.loader.InfluenceDiagramLoaderBean;
 import shitstorm.constants.Constants;
 import shitstorm.enums.NodeFocus;
 import shitstorm.exceptions.ProcessNotSupportedException;
-import shitstorm.interfaces.INodeDAO;
-import shitstorm.interfaces.INodeGroupDAO;
-import shitstorm.interfaces.IProcessDAO;
+import shitstorm.interfaces.local.INodeDAO;
+import shitstorm.interfaces.local.INodeGroupDAO;
+import shitstorm.interfaces.local.IProcessDAO;
 import shitstorm.persistence.entities.ENode;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.persistence.entities.EProcess;
@@ -41,7 +42,7 @@ public class ProcessRegistratorBean {
 	InfluenceDiagramLoaderBean influenceDiagramLoader;
 
 	public EProcess registerProcess(String processName, String refInProcessEngine, String influenceDiagramFilename,
-			String periodSeperator, String instancePeriod, String decisionAbbreviation,
+			String periodSeperator, String instancePeriod, String decisionAbbreviation, int lastDecisionPeriod,
 			boolean includeNodeUserProperties)
 			throws FileNotFoundException, IOException, NoResultException, ProcessNotSupportedException {
 		EProcess process = this.daoProcess.findByReferenceInProcessEngine(refInProcessEngine);
@@ -63,6 +64,7 @@ public class ProcessRegistratorBean {
 			process.setInfluenceDiagramPeriodSeperator(periodSeperator);
 			process.setInfluenceDiagramInstancePeriod(instancePeriod);
 			process.setInfluenceDiagramDecisionAbbreviation(decisionAbbreviation);
+			process.setLastDecisionPeriod(lastDecisionPeriod);
 			process = this.daoProcess.create(process);
 		}
 		process = this.registerNodes(process.getRefInProcessengine(), includeNodeUserProperties);

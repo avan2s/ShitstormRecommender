@@ -1,10 +1,10 @@
-package shitstorm.beans;
+package shitstorm.beans.dao;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import shitstorm.interfaces.INodeGroupDAO;
+import shitstorm.interfaces.local.INodeGroupDAO;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.pojos.GenericDAOImpl;
 

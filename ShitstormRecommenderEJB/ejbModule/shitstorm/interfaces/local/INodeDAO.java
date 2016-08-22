@@ -1,5 +1,6 @@
-package shitstorm.interfaces;
+package shitstorm.interfaces.local;
 
+import shitstorm.interfaces.IGenericDAO;
 import shitstorm.persistence.entities.ENode;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.persistence.entities.EProcess;
@@ -12,4 +13,6 @@ public interface INodeDAO extends IGenericDAO<ENode, Integer> {
 	public ENode findByProcessAndVariableRef(String refProcess, String refVariable, int period);
 
 	public ENode findByProcessAndTaskRef(String refProcess, String refTask, int period);
+
+	public ENode findByProcessAndAbbreviationAndPeriod(String refProcess, String abbreviation, int period);
 }

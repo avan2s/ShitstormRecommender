@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -48,6 +49,9 @@ public class EGoal implements Serializable {
 	@JoinColumn(name = "node_group_id")
 	private ENodeGroup nodeGroup;
 
+	@OneToMany(mappedBy = "goal")
+	List<ETakenDecisionEffect> takenDecisionEffects;
+
 	// bi-directional many-to-many association to EProcess
 	@ManyToMany(mappedBy = "goals", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
 			CascadeType.REFRESH }, fetch = FetchType.EAGER)
@@ -55,6 +59,7 @@ public class EGoal implements Serializable {
 
 	public EGoal() {
 		this.processes = new ArrayList<>();
+		this.takenDecisionEffects = new ArrayList<>();
 	}
 
 	@Override
@@ -116,6 +121,14 @@ public class EGoal implements Serializable {
 
 	public void setProcesses(List<EProcess> processes) {
 		this.processes = processes;
+	}
+
+	public List<ETakenDecisionEffect> getTakenDecisionEffects() {
+		return takenDecisionEffects;
+	}
+
+	public void setTakenDecisionEffects(List<ETakenDecisionEffect> takenDecisionEffects) {
+		this.takenDecisionEffects = takenDecisionEffects;
 	}
 
 }

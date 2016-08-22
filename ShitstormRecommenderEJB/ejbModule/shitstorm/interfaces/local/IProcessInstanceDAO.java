@@ -1,5 +1,6 @@
-package shitstorm.interfaces;
+package shitstorm.interfaces.local;
 
+import shitstorm.interfaces.IGenericDAO;
 import shitstorm.persistence.entities.EProcessinstance;
 
 public interface IProcessInstanceDAO extends IGenericDAO<EProcessinstance, Integer> {

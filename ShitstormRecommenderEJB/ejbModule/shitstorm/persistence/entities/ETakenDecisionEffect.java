@@ -1,39 +1,55 @@
 package shitstorm.persistence.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import shitstorm.enums.ObservedEffect;
 
 /**
  * The persistent class for the taken_decision_effect database table.
  * 
  */
 @Entity
-@Table(name="taken_decision_effect")
-@NamedQuery(name="ETakenDecisionEffect.findAll", query="SELECT e FROM ETakenDecisionEffect e")
+@Table(name = "taken_decision_effect")
+@NamedQuery(name = "ETakenDecisionEffect.findAll", query = "SELECT e FROM ETakenDecisionEffect e")
 public class ETakenDecisionEffect implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idTakenDecisionEffect;
 
-	@Column(name="decision_effect")
-	private String decisionEffect;
+	@Column(name = "decision_effect")
+	@Enumerated(EnumType.STRING)
+	private ObservedEffect decisionEffect;
 
-	@Column(name="goal_id")
-	private int goalId;
+	@ManyToOne
+	@JoinColumn(name = "goal_id")
+	private EGoal goal;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="observed_date")
-	private Date observedDate;
+	@Column(name = "observed_date", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Calendar observedDate;
 
-	//bi-directional many-to-one association to ETakenDecision
-	@OneToMany(mappedBy="takenDecisionEffect")
+	// bi-directional many-to-one association to ETakenDecision
+	@OneToMany(mappedBy = "takenDecisionEffect")
 	private List<ETakenDecision> takenDecisions;
 
 	public ETakenDecisionEffect() {
@@ -48,27 +64,19 @@ public class ETakenDecisionEffect implements Serializable {
 		this.idTakenDecisionEffect = idTakenDecisionEffect;
 	}
 
-	public String getDecisionEffect() {
+	public ObservedEffect getDecisionEffect() {
 		return this.decisionEffect;
 	}
 
-	public void setDecisionEffect(String decisionEffect) {
+	public void setDecisionEffect(ObservedEffect decisionEffect) {
 		this.decisionEffect = decisionEffect;
 	}
 
-	public int getGoalId() {
-		return this.goalId;
-	}
-
-	public void setGoalId(int goalId) {
-		this.goalId = goalId;
-	}
-
-	public Date getObservedDate() {
+	public Calendar getObservedDate() {
 		return this.observedDate;
 	}
 
-	public void setObservedDate(Date observedDate) {
+	public void setObservedDate(Calendar observedDate) {
 		this.observedDate = observedDate;
 	}
 
@@ -78,6 +86,14 @@ public class ETakenDecisionEffect implements Serializable {
 
 	public void setTakenDecisions(List<ETakenDecision> takenDecisions) {
 		this.takenDecisions = takenDecisions;
+	}
+
+	public EGoal getGoal() {
+		return goal;
+	}
+
+	public void setGoal(EGoal goal) {
+		this.goal = goal;
 	}
 
 	public ETakenDecision addTakenDecision(ETakenDecision takenDecision) {

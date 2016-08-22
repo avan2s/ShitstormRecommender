@@ -1,10 +1,10 @@
-package shitstorm.beans;
+package shitstorm.beans.dao;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import shitstorm.interfaces.INodeDAO;
+import shitstorm.interfaces.local.INodeDAO;
 import shitstorm.persistence.entities.ENode;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.persistence.entities.EProcess;
@@ -46,15 +46,16 @@ public class NodeDAOBean extends GenericDAOImpl<ENode, Integer> implements INode
 
 	}
 
-//	@Override
-//	public ENode findByProcessAndTaskRef(String refProcess, String refTask) {
-//		try {
-//			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_TASK, ENode.class)
-//					.setParameter("refTask", refTask).setParameter("refProcess", refProcess).getSingleResult();
-//		} catch (NoResultException e) {
-//			return null;
-//		}
-//	}
+	@Override
+	public ENode findByProcessAndAbbreviationAndPeriod(String refProcess, String abbreviation, int period) {
+		try {
+			return this.em.createNamedQuery(ENode.QUERY_GET_BY_PROCESS_AND_ABBREVIATION_AND_PERIOD, ENode.class)
+					.setParameter("refProcess", refProcess).setParameter("abbreviation", abbreviation)
+					.setParameter("period", period).getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
 
 	@Override
 	public ENode findByProcessAndTaskRef(String refProcess, String refTask, int period) {

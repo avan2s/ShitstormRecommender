@@ -1,4 +1,4 @@
-package shitstorm.beans;
+package shitstorm.beans.registrators;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import javax.ejb.Stateless;
 
 import shitstorm.constants.Constants;
 import shitstorm.exceptions.ProcessNotSupportedException;
-import shitstorm.interfaces.IProcessDAO;
-import shitstorm.interfaces.IProcessInstanceDAO;
+import shitstorm.interfaces.local.IProcessDAO;
+import shitstorm.interfaces.local.IProcessInstanceDAO;
 import shitstorm.persistence.entities.EProcess;
 import shitstorm.persistence.entities.EProcessinstance;
 

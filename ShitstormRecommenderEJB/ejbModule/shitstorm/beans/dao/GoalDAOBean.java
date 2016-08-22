@@ -1,11 +1,11 @@
-package shitstorm.beans;
+package shitstorm.beans.dao;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
 import kip.enums.KipGoalEffect;
-import shitstorm.interfaces.IGoalDAO;
+import shitstorm.interfaces.local.IGoalDAO;
 import shitstorm.persistence.entities.EGoal;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.persistence.entities.EProcess;

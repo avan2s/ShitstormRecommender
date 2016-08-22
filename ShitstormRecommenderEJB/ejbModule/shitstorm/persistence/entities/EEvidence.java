@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,10 +27,12 @@ import javax.persistence.TemporalType;
 @Table(name = "evidence")
 @NamedQueries({
 		@NamedQuery(name = EEvidence.QUERY_GET_BY_PROCESSINSTANCE_NEWEST, query = "SELECT e FROM EEvidence e JOIN e.processinstance pi WHERE pi.refInProcessengine= :refInstance AND e.created IN (SELECT max(e1.created) FROM EEvidence e1 GROUP BY e1.processinstance,e1.node)"),
-		@NamedQuery(name = EEvidence.QUERY_GETALL, query = "SELECT e FROM EEvidence e") })
+		@NamedQuery(name = EEvidence.QUERY_GETALL, query = "SELECT e FROM EEvidence e"),
+		@NamedQuery(name = EEvidence.QUERY_GET_BY_PROCESSINSTANCE_AND_TASKREF, query = "SELECT e FROM EEvidence e JOIN e.processinstance pi JOIN e.takenDecision td JOIN td.task t WHERE t.refInProcessengine=:refTask AND pi.refInProcessengine=:refInstance") })
 public class EEvidence implements Serializable {
 	public static final String QUERY_GETALL = "EEvidence.findAll";
 	public static final String QUERY_GET_BY_PROCESSINSTANCE_NEWEST = "EEvidence.getByProcessinstanceNewest";
+	public static final String QUERY_GET_BY_PROCESSINSTANCE_AND_TASKREF = "EEvidence.GET_BY_PROCESSINSTANCE_AND_TASKREF";
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,6 +40,7 @@ public class EEvidence implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idEvidence;
 
+	@Column(name = "created", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar created;
 

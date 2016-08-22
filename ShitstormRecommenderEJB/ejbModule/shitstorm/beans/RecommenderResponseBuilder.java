@@ -11,9 +11,10 @@ import kip.tools.model.NextBestAction;
 import kip.tools.model.SimAct;
 import kip.tools.model.SimGoal;
 import kip.tools.model.SimPeriod;
-import shitstorm.interfaces.INodeGroupDAO;
-import shitstorm.interfaces.ITaskDAO;
+import shitstorm.interfaces.local.INodeGroupDAO;
+import shitstorm.interfaces.local.ITaskDAO;
 import shitstorm.persistence.entities.ENodeGroup;
+import shitstorm.pojos.dto.NextActionRecommendation;
 import shitstorm.pojos.dto.SequenceRecommendation;
 
 @Stateless
@@ -25,7 +26,7 @@ public class RecommenderResponseBuilder {
 	@EJB
 	private INodeGroupDAO daoGroup;
 
-	public NextBestAction build(NextBestAction nextBestAction, String refProcess) {
+	public NextActionRecommendation build(NextBestAction nextBestAction, String refProcess) {
 		List<SimAct> simActs = nextBestAction.getSimPeriod().getSimActValues();
 		String bestActionAbbreviation = nextBestAction.getAction();
 
@@ -42,14 +43,23 @@ public class RecommenderResponseBuilder {
 				break;
 			}
 		}
-		return nextBestAction;
+		NextActionRecommendation recommendation = new NextActionRecommendation();
+		recommendation.setNextBestAction(nextBestAction);
+		return recommendation;
+	}
+
+	public NextActionRecommendation build(NextBestAction nextBestAction, String refProcess,
+			String additionalInformation) {
+		NextActionRecommendation recommendation = this.build(nextBestAction, refProcess, additionalInformation);
+		recommendation.setAdditionalInformation(additionalInformation);
+		return recommendation;
 	}
 
 	public SequenceRecommendation build(KipSequence kipSequence, String refProcess) {
 
 		List<NextBestAction> nextBestActions = kipSequence.getSequence();
 		for (NextBestAction nextAction : nextBestActions) {
-			nextAction = this.build(nextAction, refProcess);
+			nextAction = this.build(nextAction, refProcess).getNextBestAction();
 		}
 		SequenceRecommendation sequenceRecommendation = new SequenceRecommendation();
 		sequenceRecommendation.setNextBestActions(nextBestActions);
@@ -61,19 +71,25 @@ public class RecommenderResponseBuilder {
 		sequenceRecommendation.setSimGoals(simGoals);
 		return sequenceRecommendation;
 	}
+	
+	public SequenceRecommendation build(KipSequence kipSequence, String refProcess, String additionalInformation) {
+		SequenceRecommendation recommendation = this.build(kipSequence, refProcess);
+		recommendation.setAdditionalInformation(additionalInformation);
+		return recommendation;
+	}
 
-//	private List<SimulatedGoal> buildGoalValues(SimAct simAct) {
-//		// Simulationswerte für Zielgrößen überführen
-//		List<SimulatedGoal> simulatedGoals = new ArrayList<>();
-//		List<SimGoal> kipGoalsSim = simAct.getSimGoalValues();
-//		for (SimGoal simGoal : kipGoalsSim) {
-//			double uniformUtility = simGoal.getExpectedValue().getUniformUtility();
-//			double unitValue = simGoal.getExpectedValue().getUnitValue();
-//			SimulatedGoal simulatedGoal = new SimulatedGoal();
-//			simulatedGoal.setUniformUtility(uniformUtility);
-//			simulatedGoal.setUnitValue(unitValue);
-//			simulatedGoals.add(simulatedGoal);
-//		}
-//		return simulatedGoals;
-//	}
+	// private List<SimulatedGoal> buildGoalValues(SimAct simAct) {
+	// // Simulationswerte für Zielgrößen überführen
+	// List<SimulatedGoal> simulatedGoals = new ArrayList<>();
+	// List<SimGoal> kipGoalsSim = simAct.getSimGoalValues();
+	// for (SimGoal simGoal : kipGoalsSim) {
+	// double uniformUtility = simGoal.getExpectedValue().getUniformUtility();
+	// double unitValue = simGoal.getExpectedValue().getUnitValue();
+	// SimulatedGoal simulatedGoal = new SimulatedGoal();
+	// simulatedGoal.setUniformUtility(uniformUtility);
+	// simulatedGoal.setUnitValue(unitValue);
+	// simulatedGoals.add(simulatedGoal);
+	// }
+	// return simulatedGoals;
+	// }
 }

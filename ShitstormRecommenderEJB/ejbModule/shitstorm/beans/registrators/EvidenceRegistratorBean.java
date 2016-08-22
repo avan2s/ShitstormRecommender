@@ -1,4 +1,4 @@
-package shitstorm.beans;
+package shitstorm.beans.registrators;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 
 import kip.tools.model.KipEvidence;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
-import shitstorm.interfaces.IEvidenceDAO;
-import shitstorm.interfaces.INodeDAO;
-import shitstorm.interfaces.IProcessInstanceDAO;
+import shitstorm.interfaces.local.IEvidenceDAO;
+import shitstorm.interfaces.local.INodeDAO;
+import shitstorm.interfaces.local.IProcessInstanceDAO;
 import shitstorm.persistence.entities.EEvidence;
 import shitstorm.persistence.entities.ENode;
 import shitstorm.persistence.entities.EProcessinstance;

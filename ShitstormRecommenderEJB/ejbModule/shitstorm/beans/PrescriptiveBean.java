@@ -8,13 +8,17 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.jws.WebService;
 
-import kip.tools.model.NextBestAction;
+import shitstorm.enums.ObservedEffect;
 import shitstorm.enums.SequenceType;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
 import shitstorm.exceptions.TaskNotFoundException;
-import shitstorm.interfaces.IPrescriptiveKipService;
+import shitstorm.interfaces.remote.IDecisionEffectRegistrator;
+import shitstorm.interfaces.remote.IDecisionRegistrator;
+import shitstorm.interfaces.remote.IRecommender;
+import shitstorm.interfaces.webservices.IPrescriptiveKipService;
 import shitstorm.pojos.dto.GoalRequest;
+import shitstorm.pojos.dto.NextActionRecommendation;
 import shitstorm.pojos.dto.ProcessvariableInformation;
 import shitstorm.pojos.dto.SequenceRecommendation;
 import shitstorm.pojos.dto.TaskInformation;
@@ -25,10 +29,13 @@ import shitstorm.pojos.dto.TaskInformation;
 public class PrescriptiveBean implements IPrescriptiveKipService {
 
 	@EJB
-	private RecommenderBean recommenderBean;
+	private IRecommender recommenderBean;
 
 	@EJB
-	private DecisionRegistratorBean decisionRegistrator;
+	private IDecisionRegistrator decisionRegistrator;
+	
+	@EJB
+	private IDecisionEffectRegistrator effectRegistrator;
 
 	@Override
 	public SequenceRecommendation recommendSequence(SequenceType type, int numberOfDecisions,
@@ -42,7 +49,7 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 	}
 
 	@Override
-	public NextBestAction recommendNextAction(String refProcessInProcessEngine,
+	public NextActionRecommendation recommendNextAction(String refProcessInProcessEngine,
 			String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
 			boolean doNothingActionAllowed) throws Exception {
@@ -57,6 +64,13 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 			ProcessInstanceNotSupportedException, TaskNotFoundException {
 		return this.decisionRegistrator.registerDecision(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
 				taskRefForTakenDecision, variableInformation, taskInformation);
+	}
+	
+	@Override
+	public String registerEffect(String refInstance, String taskReference, String goalFigure,
+			ObservedEffect observedEffect) throws ProcessInstanceNotSupportedException{
+		this.effectRegistrator.registerEffect(refInstance, goalFigure, observedEffect, taskReference);
+		return "Registration successful";
 	}
 
 }

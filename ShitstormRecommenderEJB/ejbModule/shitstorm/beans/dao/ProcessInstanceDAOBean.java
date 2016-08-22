@@ -1,10 +1,10 @@
-package shitstorm.beans;
+package shitstorm.beans.dao;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import shitstorm.interfaces.IProcessInstanceDAO;
+import shitstorm.interfaces.local.IProcessInstanceDAO;
 import shitstorm.persistence.entities.EProcessinstance;
 import shitstorm.pojos.GenericDAOImpl;
 

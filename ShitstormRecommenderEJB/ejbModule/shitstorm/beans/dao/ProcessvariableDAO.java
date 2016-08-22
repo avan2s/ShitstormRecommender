@@ -1,10 +1,10 @@
-package shitstorm.beans;
+package shitstorm.beans.dao;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import shitstorm.enums.VariableType;
-import shitstorm.interfaces.IProcessvariableDAO;
+import shitstorm.interfaces.local.IProcessvariableDAO;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.persistence.entities.EProcess;
 import shitstorm.persistence.entities.EProcessvariable;

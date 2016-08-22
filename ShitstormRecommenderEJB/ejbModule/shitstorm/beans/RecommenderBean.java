@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import kip.tools.InfluenceDiagramNetwork;
 import kip.tools.MaxBenefitSequenceCalculator;
@@ -19,29 +17,31 @@ import kip.tools.exception.ValueNotReadableException;
 import kip.tools.model.KipGoal;
 import kip.tools.model.KipSequence;
 import kip.tools.model.NextBestAction;
+import shitstorm.beans.loader.Evidence2InfluenceDiagramLoader;
+import shitstorm.beans.loader.InfluenceDiagramLoaderBean;
+import shitstorm.beans.registrators.EvidenceRegistratorBean;
+import shitstorm.beans.registrators.ProcessInstanceRegistratorBean;
 import shitstorm.enums.SequenceType;
 import shitstorm.exceptions.PeriodOutOfRangeException;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
-import shitstorm.interfaces.IEvidenceLoader;
-import shitstorm.interfaces.IGoalDAO;
-import shitstorm.interfaces.INodeDAO;
+import shitstorm.interfaces.local.IGoalDAO;
+import shitstorm.interfaces.remote.IDecisionRegistrator;
+import shitstorm.interfaces.remote.IRecommender;
 import shitstorm.persistence.entities.EGoal;
 import shitstorm.persistence.entities.EProcessinstance;
 import shitstorm.pojos.dto.GoalRequest;
+import shitstorm.pojos.dto.NextActionRecommendation;
 import shitstorm.pojos.dto.ProcessvariableInformation;
 import shitstorm.pojos.dto.SequenceRecommendation;
 import shitstorm.pojos.dto.TaskInformation;
 
 @Stateless
-@LocalBean
-public class RecommenderBean {
+@Remote(IRecommender.class)
+public class RecommenderBean implements IRecommender {
 
 	private InfluenceDiagramNetwork network;
 	private EProcessinstance processinstance;
-
-	@PersistenceContext
-	private EntityManager em;
 
 	@EJB
 	private ProcessInstanceRegistratorBean processInstanceRegistrator;
@@ -50,10 +50,7 @@ public class RecommenderBean {
 	private IGoalDAO daoGoal;
 
 	@EJB
-	private INodeDAO daoNode;
-
-	@EJB
-	private IEvidenceLoader evidenceLoader;
+	private Evidence2InfluenceDiagramLoader evidenceLoader;
 
 	@EJB
 	private EvidenceRegistratorBean evidenceRegistrator;
@@ -62,12 +59,16 @@ public class RecommenderBean {
 	private InfluenceDiagramLoaderBean influenceDiagramLoader;
 
 	@EJB
-	private DecisionRegistratorBean decisionRegistrator;
+	private IDecisionRegistrator decisionRegistrator;
 
 	@EJB
 	private RecommenderResponseBuilder responseBuilder;
 
-	public NextBestAction recommendNextAction(String refProcessInProcessEngine,
+	/* (non-Javadoc)
+	 * @see shitstorm.beans.IRecommender#recommendNextAction(java.lang.String, java.lang.String, java.util.List, java.util.List, java.util.List, boolean)
+	 */
+	@Override
+	public NextActionRecommendation recommendNextAction(String refProcessInProcessEngine,
 			String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
 			boolean doNothingActionAllowed) throws Exception {
@@ -96,14 +97,20 @@ public class RecommenderBean {
 		// Response konstruieren
 		NextBestAction nextBestAction = nextActionCalculator.getNextBestAction();
 		String refProcess = this.processinstance.getProcess().getRefInProcessengine();
-		NextBestAction response = this.responseBuilder.build(nextBestAction, refProcess);
+		NextActionRecommendation response = this.responseBuilder.build(nextBestAction, refProcess);
 		return response;
 	}
 
+	/* (non-Javadoc)
+	 * @see shitstorm.beans.IRecommender#recommendSequence(shitstorm.enums.SequenceType, int, java.lang.String, java.lang.String, java.util.List, java.util.List, java.util.List, boolean)
+	 */
+	@Override
 	public SequenceRecommendation recommendSequence(SequenceType type, int numberOfDecisions,
 			String refProcessInProcessEngine, String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
 			boolean doNothingActionAllowed) throws Exception {
+
+		String additionalInformation = "";
 
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
@@ -128,8 +135,10 @@ public class RecommenderBean {
 
 		// Für den Prototyp
 		if (lastPeriod > lastDecisionPeriodInInfluenceDiagram) {
-			throw new PeriodOutOfRangeException(refProcessInProcessEngine, lastPeriod,
+			PeriodOutOfRangeException exception = new PeriodOutOfRangeException(refProcessInProcessEngine, lastPeriod,
 					lastDecisionPeriodInInfluenceDiagram);
+			additionalInformation = exception.getMessage()
+					+ " Calculation was performed until the last supported Decision period of the diagram!";
 		}
 
 		// Sequenzcalculator auswählen und konfigurieren
@@ -146,7 +155,8 @@ public class RecommenderBean {
 
 		// Antwort aufbereiten
 		KipSequence kipSequence = sequenceCalculator.getKipSequence();
-		SequenceRecommendation recommendation = this.responseBuilder.build(kipSequence, refProcessInProcessEngine);
+		SequenceRecommendation recommendation = this.responseBuilder.build(kipSequence, refProcessInProcessEngine,
+				additionalInformation);
 		return recommendation;
 	}
 

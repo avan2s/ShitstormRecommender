@@ -1,4 +1,4 @@
-package shitstorm.beans;
+package shitstorm.beans.loader;
 
 import java.io.File;
 
@@ -7,10 +7,11 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import kip.tools.InfluenceDiagramNetwork;
+import shitstorm.beans.registrators.ProcessInstanceRegistratorBean;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
-import shitstorm.interfaces.IProcessDAO;
-import shitstorm.interfaces.IProcessInstanceDAO;
+import shitstorm.interfaces.local.IProcessDAO;
+import shitstorm.interfaces.local.IProcessInstanceDAO;
 import shitstorm.persistence.entities.EProcess;
 import shitstorm.persistence.entities.EProcessinstance;
 

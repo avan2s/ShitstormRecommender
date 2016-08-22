@@ -1,4 +1,4 @@
-package shitstorm.beans;
+package shitstorm.beans.singleton;
 
 import java.io.IOException;
 
@@ -9,13 +9,15 @@ import javax.ejb.Startup;
 import javax.persistence.NoResultException;
 
 import kip.enums.KipGoalEffect;
+import shitstorm.beans.registrators.ProcessInstanceRegistratorBean;
+import shitstorm.beans.registrators.ProcessRegistratorBean;
 import shitstorm.enums.VariableType;
 import shitstorm.exceptions.ProcessNotSupportedException;
-import shitstorm.interfaces.IGoalDAO;
-import shitstorm.interfaces.INodeGroupDAO;
-import shitstorm.interfaces.IProcessDAO;
-import shitstorm.interfaces.IProcessvariableDAO;
-import shitstorm.interfaces.ITaskDAO;
+import shitstorm.interfaces.local.IGoalDAO;
+import shitstorm.interfaces.local.INodeGroupDAO;
+import shitstorm.interfaces.local.IProcessDAO;
+import shitstorm.interfaces.local.IProcessvariableDAO;
+import shitstorm.interfaces.local.ITaskDAO;
 import shitstorm.persistence.entities.ENodeGroup;
 import shitstorm.persistence.entities.EProcess;
 
@@ -50,7 +52,7 @@ public class InitializationBean {
 		if (process == null) {
 			try {
 				process = this.processRegistrator.registerProcess("shitstorm", "shitstorm-ref", "shitstorm.xdsl", "_",
-						"I", "E", true);
+						"I", "E", 3, true);
 				String refProcess = process.getRefInProcessengine();
 
 				// Ziele verlinken
@@ -98,7 +100,6 @@ public class InitializationBean {
 				this.instanceRegistrator.registerProcessInstance(refProcess, "shitstorm-instance-1");
 
 			} catch (NoResultException | IOException | ProcessNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

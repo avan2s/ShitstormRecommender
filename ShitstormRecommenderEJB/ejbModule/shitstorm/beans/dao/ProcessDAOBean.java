@@ -1,9 +1,9 @@
-package shitstorm.beans;
+package shitstorm.beans.dao;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
-import shitstorm.interfaces.IProcessDAO;
+import shitstorm.interfaces.local.IProcessDAO;
 import shitstorm.persistence.entities.EProcess;
 import shitstorm.pojos.GenericDAOImpl;
 

@@ -28,7 +28,7 @@ public class ProcessInstanceRegistratorBean {
 	IProcessInstanceDAO daoProcessInstance;
 
 	public EProcessinstance registerProcessInstance(String refProcess, String refProcessInstance)
-			throws IOException, ProcessNotSupportedException {
+			throws ProcessNotSupportedException {
 		EProcess process = this.daoProcess.findByReferenceInProcessEngine(refProcess);
 
 		if (process != null) {
@@ -55,7 +55,11 @@ public class ProcessInstanceRegistratorBean {
 				Path sourcePath = Paths.get(
 						process.getInfluenceDiagramPath() + File.separator + process.getInfluenceDiagramFilename());
 				Path targetPath = Paths.get(diagramForInstance);
-				Files.copy(sourcePath, targetPath);
+				try {
+					Files.copy(sourcePath, targetPath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 
 			// Prozessinstanzobjekt anlegen

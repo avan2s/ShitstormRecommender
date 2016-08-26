@@ -50,19 +50,22 @@ public class EvidenceRegistratorBean {
 				throw new ProcessInstanceNotSupportedException(refProcessInstance);
 			}
 			String refProcess = processinstance.getProcess().getRefInProcessengine();
-			ENode node = this.daoNode.findByProcessAndVariableRef(refProcess, refVar, processinstance.getCurrentPeriod());
+			ENode node = this.daoNode.findByProcessAndVariableRef(refProcess, refVar,
+					processinstance.getCurrentPeriod());
 
-			EEvidence evidence = new EEvidence();
-			evidence.setNode(node);
-			evidence.setProcessinstance(processinstance);
-			evidence.setValue(varInf.getValue());
-
-			this.daoEvidence.create(evidence);
-
-			KipEvidence kipEvidence = new KipEvidence();
-			kipEvidence.setNodeName(node.getNodeName());
-			kipEvidence.setEvidenceValue(varInf.getValue());
-			evidences.add(kipEvidence);
+			// Nur als Evidenz aufnehmen, wenn Knoten existiert (node darf nicht
+			// null sein)
+			if (node != null) {
+				EEvidence evidence = new EEvidence();
+				evidence.setNode(node);
+				evidence.setProcessinstance(processinstance);
+				evidence.setValue(varInf.getValue());
+				this.daoEvidence.create(evidence);
+				KipEvidence kipEvidence = new KipEvidence();
+				kipEvidence.setNodeName(node.getNodeName());
+				kipEvidence.setEvidenceValue(varInf.getValue());
+				evidences.add(kipEvidence);
+			}
 		}
 		return evidences;
 	}

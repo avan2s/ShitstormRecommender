@@ -29,18 +29,25 @@ public class RecommenderResponseBuilder {
 	public NextActionRecommendation build(NextBestAction nextBestAction, String refProcess) {
 		List<SimAct> simActs = nextBestAction.getSimPeriod().getSimActValues();
 		String bestActionAbbreviation = nextBestAction.getAction();
-
 		// Index der besten Aktion finden und Aktionen um zustäzliche
 		// Taskinformationen ergänzen
 		for (SimAct simAct : simActs) {
 			ENodeGroup ngForAction = this.daoGroup.findByAbbreviationInProcess(refProcess, simAct.getAction());
-			simAct.setTaskRefForAction(ngForAction.getTask().getRefInProcessengine());
-			simAct.setTaskNameForAction(ngForAction.getTask().getTaskName());
-			// Wenn die Simulationswerte sich auf die besteAktion beziehen
-			if (simAct.getAction().equals(bestActionAbbreviation)) {
-				nextBestAction.setTaskRefForAction(ngForAction.getTask().getRefInProcessengine());
-				nextBestAction.setTaskNameForAction(ngForAction.getTask().getTaskName());
-				break;
+			if (ngForAction != null) {
+				simAct.setTaskRefForAction(ngForAction.getTask().getRefInProcessengine());
+				simAct.setTaskNameForAction(ngForAction.getTask().getTaskName());
+				// Wenn die Simulationswerte sich auf die besteAktion beziehen
+				if (simAct.getAction().equals(bestActionAbbreviation)) {
+					nextBestAction.setTaskRefForAction(ngForAction.getTask().getRefInProcessengine());
+					nextBestAction.setTaskNameForAction(ngForAction.getTask().getTaskName());
+				}
+			} else {
+				if (simAct.getAction().equals(bestActionAbbreviation)) {
+					nextBestAction.setTaskNameForAction(simAct.getAction());
+					nextBestAction.setTaskRefForAction(simAct.getAction());
+				}
+				simAct.setTaskNameForAction(simAct.getAction());
+				simAct.setTaskRefForAction(simAct.getAction());
 			}
 		}
 		NextActionRecommendation recommendation = new NextActionRecommendation();
@@ -71,7 +78,7 @@ public class RecommenderResponseBuilder {
 		sequenceRecommendation.setSimGoals(simGoals);
 		return sequenceRecommendation;
 	}
-	
+
 	public SequenceRecommendation build(KipSequence kipSequence, String refProcess, String additionalInformation) {
 		SequenceRecommendation recommendation = this.build(kipSequence, refProcess);
 		recommendation.setAdditionalInformation(additionalInformation);

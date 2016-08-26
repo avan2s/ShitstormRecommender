@@ -8,8 +8,11 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.jws.WebService;
 
+import kip.tools.exception.ValueNotReadableException;
 import shitstorm.enums.ObservedEffect;
 import shitstorm.enums.SequenceType;
+import shitstorm.exceptions.CalculationFailedException;
+import shitstorm.exceptions.GoalNotSupportedException;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
 import shitstorm.exceptions.TaskNotFoundException;
@@ -33,7 +36,7 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 
 	@EJB
 	private IDecisionRegistrator decisionRegistrator;
-	
+
 	@EJB
 	private IDecisionEffectRegistrator effectRegistrator;
 
@@ -41,7 +44,8 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 	public SequenceRecommendation recommendSequence(SequenceType type, int numberOfDecisions,
 			String refProcessInProcessEngine, String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
-			boolean doNothingActionAllowed) throws Exception {
+			boolean doNothingActionAllowed) throws ProcessNotSupportedException, ProcessInstanceNotSupportedException,
+			ValueNotReadableException, GoalNotSupportedException, CalculationFailedException {
 
 		return this.recommenderBean.recommendSequence(type, numberOfDecisions, refProcessInProcessEngine,
 				refProcessInstanceInProcessEngine, goalRequests, variableInformation, taskInformation,
@@ -65,10 +69,10 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 		return this.decisionRegistrator.registerDecision(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
 				taskRefForTakenDecision, variableInformation, taskInformation);
 	}
-	
+
 	@Override
 	public String registerEffect(String refInstance, String taskReference, String goalFigure,
-			ObservedEffect observedEffect) throws ProcessInstanceNotSupportedException{
+			ObservedEffect observedEffect) throws ProcessInstanceNotSupportedException {
 		this.effectRegistrator.registerEffect(refInstance, goalFigure, observedEffect, taskReference);
 		return "Registration successful";
 	}

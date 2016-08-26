@@ -1,6 +1,5 @@
 package shitstorm.beans;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +21,8 @@ import shitstorm.beans.loader.InfluenceDiagramLoaderBean;
 import shitstorm.beans.registrators.EvidenceRegistratorBean;
 import shitstorm.beans.registrators.ProcessInstanceRegistratorBean;
 import shitstorm.enums.SequenceType;
+import shitstorm.exceptions.CalculationFailedException;
+import shitstorm.exceptions.GoalNotSupportedException;
 import shitstorm.exceptions.PeriodOutOfRangeException;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
@@ -64,14 +65,20 @@ public class RecommenderBean implements IRecommender {
 	@EJB
 	private RecommenderResponseBuilder responseBuilder;
 
-	/* (non-Javadoc)
-	 * @see shitstorm.beans.IRecommender#recommendNextAction(java.lang.String, java.lang.String, java.util.List, java.util.List, java.util.List, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see shitstorm.beans.IRecommender#recommendNextAction(java.lang.String,
+	 * java.lang.String, java.util.List, java.util.List, java.util.List,
+	 * boolean)
 	 */
 	@Override
 	public NextActionRecommendation recommendNextAction(String refProcessInProcessEngine,
 			String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
-			boolean doNothingActionAllowed) throws Exception {
+			boolean doNothingActionAllowed) throws ProcessNotSupportedException, ProcessInstanceNotSupportedException,
+			ValueNotReadableException, GoalNotSupportedException, CalculationFailedException {
+		this.normalizeGoalRequests(goalRequests);
 
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
@@ -92,7 +99,11 @@ public class RecommenderBean implements IRecommender {
 		// Kalulation der nächst besten Aktion durchführen
 		NextActionCalculator nextActionCalculator = new NextActionCalculator(this.network);
 		nextActionCalculator.setNothingActionAllowed(doNothingActionAllowed);
-		nextActionCalculator.calculateNextBestAction(currentPeriod, periodForRecommendation, kipGoals);
+		try {
+			nextActionCalculator.calculateNextBestAction(currentPeriod, periodForRecommendation, kipGoals);
+		} catch (Exception e) {
+			throw new CalculationFailedException(e.getMessage());
+		}
 
 		// Response konstruieren
 		NextBestAction nextBestAction = nextActionCalculator.getNextBestAction();
@@ -101,15 +112,20 @@ public class RecommenderBean implements IRecommender {
 		return response;
 	}
 
-	/* (non-Javadoc)
-	 * @see shitstorm.beans.IRecommender#recommendSequence(shitstorm.enums.SequenceType, int, java.lang.String, java.lang.String, java.util.List, java.util.List, java.util.List, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see shitstorm.beans.IRecommender#recommendSequence(shitstorm.enums.
+	 * SequenceType, int, java.lang.String, java.lang.String, java.util.List,
+	 * java.util.List, java.util.List, boolean)
 	 */
 	@Override
 	public SequenceRecommendation recommendSequence(SequenceType type, int numberOfDecisions,
 			String refProcessInProcessEngine, String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
-			boolean doNothingActionAllowed) throws Exception {
-
+			boolean doNothingActionAllowed) throws ValueNotReadableException, GoalNotSupportedException,
+			ProcessNotSupportedException, ProcessInstanceNotSupportedException, CalculationFailedException {
+		this.normalizeGoalRequests(goalRequests);
 		String additionalInformation = "";
 
 		// Prozessinstanz registrieren falls nötig
@@ -151,7 +167,11 @@ public class RecommenderBean implements IRecommender {
 		sequenceCalculator.setNothingActionAllowed(doNothingActionAllowed);
 
 		// Sequenz berechnen
-		sequenceCalculator.calculate(currentPeriod, lastPeriod, kipGoals);
+		try {
+			sequenceCalculator.calculate(currentPeriod, lastPeriod, kipGoals);
+		} catch (Exception e) {
+			throw new CalculationFailedException(e.getMessage());
+		}
 
 		// Antwort aufbereiten
 		KipSequence kipSequence = sequenceCalculator.getKipSequence();
@@ -163,7 +183,7 @@ public class RecommenderBean implements IRecommender {
 	private void registerInstanceAndEvidences(String refProcessInProcessEngine,
 			String refProcessInstanceInProcessEngine, List<ProcessvariableInformation> variableInformation,
 			List<TaskInformation> taskInformation)
-			throws IOException, ProcessNotSupportedException, ProcessInstanceNotSupportedException {
+			throws ProcessNotSupportedException, ProcessInstanceNotSupportedException {
 		// Registriere Prozessinstanz und gebe diese zurück. Wenn keine
 		// existiert, wird eine neue angelegt
 		this.processinstance = this.processInstanceRegistrator.registerProcessInstance(refProcessInProcessEngine,
@@ -186,13 +206,33 @@ public class RecommenderBean implements IRecommender {
 		return this.network;
 	}
 
-	private List<KipGoal> constructKipGoalsByGoalRequests(List<GoalRequest> goalRequests) throws Exception {
+	/**
+	 * Normalize the goal weight, so that they will be in sum = 1
+	 * 
+	 * @param goalRequests
+	 *            list of goalRequests, where the weight needs to be normalized
+	 * @return goalRequests with normal weight
+	 */
+	private List<GoalRequest> normalizeGoalRequests(List<GoalRequest> goalRequests) {
+		double sum = 0;
+		for (GoalRequest goalRequest : goalRequests) {
+			sum = sum + goalRequest.getGoalWeight();
+		}
+		for (GoalRequest goalRequest : goalRequests) {
+			goalRequest.setGoalWeight(goalRequest.getGoalWeight() / sum);
+			;
+		}
+		return goalRequests;
+	}
+
+	private List<KipGoal> constructKipGoalsByGoalRequests(List<GoalRequest> goalRequests)
+			throws GoalNotSupportedException {
 		List<KipGoal> kipGoals = new ArrayList<>();
 		for (GoalRequest goalRequest : goalRequests) {
 			String goalFigure = goalRequest.getGoalFigure();
 			EGoal goal = this.daoGoal.findByGoalFigure(goalFigure);
 			if (goal == null || !goal.isValidForRecommendation()) {
-				throw new Exception("GoalFigure " + goalFigure + " is not supported. Recommendation canceled!");
+				throw new GoalNotSupportedException(goalFigure);
 			}
 			String abbreviation = goal.getNodeGroup().getNodeAbbreviation();
 			KipGoal kipGoal = new KipGoal();

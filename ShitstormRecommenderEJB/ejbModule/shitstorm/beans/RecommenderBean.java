@@ -43,6 +43,7 @@ public class RecommenderBean implements IRecommender {
 
 	private InfluenceDiagramNetwork network;
 	private EProcessinstance processinstance;
+	
 
 	@EJB
 	private ProcessInstanceRegistratorBean processInstanceRegistrator;
@@ -79,7 +80,6 @@ public class RecommenderBean implements IRecommender {
 			boolean doNothingActionAllowed) throws ProcessNotSupportedException, ProcessInstanceNotSupportedException,
 			ValueNotReadableException, GoalNotSupportedException, CalculationFailedException {
 		this.normalizeGoalRequests(goalRequests);
-
 		// Prozessinstanz registrieren falls nötig
 		this.registerInstanceAndEvidences(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
 				variableInformation, taskInformation);

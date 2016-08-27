@@ -8,8 +8,11 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
+import kip.tools.exception.ValueNotReadableException;
 import shitstorm.enums.ObservedEffect;
 import shitstorm.enums.SequenceType;
+import shitstorm.exceptions.CalculationFailedException;
+import shitstorm.exceptions.GoalNotSupportedException;
 import shitstorm.exceptions.ProcessInstanceNotSupportedException;
 import shitstorm.exceptions.ProcessNotSupportedException;
 import shitstorm.exceptions.TaskNotFoundException;
@@ -39,7 +42,9 @@ public interface IPrescriptiveKipService {
 			@WebParam(name = "goals") List<GoalRequest> goalRequests,
 			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
 			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation,
-			@WebParam(name = "doNothingActionAllowed") boolean doNothingActionAllowed) throws Exception;
+			@WebParam(name = "doNothingActionAllowed") boolean doNothingActionAllowed)
+			throws ProcessNotSupportedException, ProcessInstanceNotSupportedException, ValueNotReadableException,
+			GoalNotSupportedException, CalculationFailedException;
 
 	@WebMethod
 	@WebResult(name = "responseMessage")
@@ -47,9 +52,7 @@ public interface IPrescriptiveKipService {
 			@WebParam(name = "refInstance") String refProcessInstanceInProcessEngine,
 			@WebParam(name = "refTask") String taskRefForTakenDecision,
 			@WebParam(name = "variableInformationList") List<ProcessvariableInformation> variableInformation,
-			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation)
-			throws ProcessNotSupportedException, IOException, ProcessInstanceNotSupportedException,
-			TaskNotFoundException;
+			@WebParam(name = "taskInformationList") List<TaskInformation> taskInformation) throws ProcessNotSupportedException, ProcessInstanceNotSupportedException, TaskNotFoundException;
 
 	@WebMethod
 	@WebResult(name = "responseMessage")

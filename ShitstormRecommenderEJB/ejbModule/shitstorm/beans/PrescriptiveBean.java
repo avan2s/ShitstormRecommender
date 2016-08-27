@@ -1,6 +1,5 @@
 package shitstorm.beans;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -56,7 +55,8 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 	public NextActionRecommendation recommendNextAction(String refProcessInProcessEngine,
 			String refProcessInstanceInProcessEngine, List<GoalRequest> goalRequests,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation,
-			boolean doNothingActionAllowed) throws Exception {
+			boolean doNothingActionAllowed) throws ProcessNotSupportedException, ProcessInstanceNotSupportedException,
+			ValueNotReadableException, GoalNotSupportedException, CalculationFailedException {
 		return this.recommenderBean.recommendNextAction(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
 				goalRequests, variableInformation, taskInformation, doNothingActionAllowed);
 	}
@@ -64,7 +64,7 @@ public class PrescriptiveBean implements IPrescriptiveKipService {
 	@Override
 	public String registerDecision(String refProcessInProcessEngine, String refProcessInstanceInProcessEngine,
 			String taskRefForTakenDecision, List<ProcessvariableInformation> variableInformation,
-			List<TaskInformation> taskInformation) throws ProcessNotSupportedException, IOException,
+			List<TaskInformation> taskInformation) throws ProcessNotSupportedException,
 			ProcessInstanceNotSupportedException, TaskNotFoundException {
 		return this.decisionRegistrator.registerDecision(refProcessInProcessEngine, refProcessInstanceInProcessEngine,
 				taskRefForTakenDecision, variableInformation, taskInformation);

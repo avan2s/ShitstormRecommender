@@ -23,7 +23,8 @@ public class ProcessInstanceRegistratorBean {
 
 	@EJB
 	IProcessDAO daoProcess;
-
+	
+	
 	@EJB
 	IProcessInstanceDAO daoProcessInstance;
 

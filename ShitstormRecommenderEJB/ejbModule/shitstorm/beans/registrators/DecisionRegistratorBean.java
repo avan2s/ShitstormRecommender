@@ -1,6 +1,5 @@
 package shitstorm.beans.registrators;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -55,7 +54,7 @@ public class DecisionRegistratorBean implements IDecisionRegistrator {
 	public String registerDecision(@WebParam(name = "refProcess") String refProcessInProcessEngine,
 			String refProcessInstanceInProcessEngine, String taskRefForTakenDecision,
 			List<ProcessvariableInformation> variableInformation, List<TaskInformation> taskInformation)
-			throws ProcessNotSupportedException, IOException, ProcessInstanceNotSupportedException,
+			throws ProcessNotSupportedException,ProcessInstanceNotSupportedException,
 			TaskNotFoundException {
 
 		// Prozessinstanzobjekt erhalten (neu registrieren falls noch nicht

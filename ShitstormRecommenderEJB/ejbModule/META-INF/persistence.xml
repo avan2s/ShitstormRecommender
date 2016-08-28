@@ -2,17 +2,17 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="ShitstormRecommenderEJB">
 		<jta-data-source>java:jboss/datasources/ShitstormDS</jta-data-source>
-		<class>shitstorm.persistence.entities.EEvidence</class>
-		<class>shitstorm.persistence.entities.EGoal</class>
-		<class>shitstorm.persistence.entities.ENode</class>
-		<class>shitstorm.persistence.entities.ENodeGroup</class>
-		<class>shitstorm.persistence.entities.EProcess</class>
-		<class>shitstorm.persistence.entities.EProcessinstance</class>
-		<class>shitstorm.persistence.entities.EProcessvariable</class>
-		<class>shitstorm.persistence.entities.ETakenDecision</class>
-		<class>shitstorm.persistence.entities.ETakenDecisionEffect</class>
-		<class>shitstorm.persistence.entities.ETask</class>
-		<class>shitstorm.persistence.entities.ETaskOptimizationmodel</class>
+		<class>recommender.persistence.entities.EEvidence</class>
+		<class>recommender.persistence.entities.EGoal</class>
+		<class>recommender.persistence.entities.ENode</class>
+		<class>recommender.persistence.entities.ENodeGroup</class>
+		<class>recommender.persistence.entities.EProcess</class>
+		<class>recommender.persistence.entities.EProcessinstance</class>
+		<class>recommender.persistence.entities.EProcessvariable</class>
+		<class>recommender.persistence.entities.ETakenDecision</class>
+		<class>recommender.persistence.entities.ETakenDecisionEffect</class>
+		<class>recommender.persistence.entities.ETask</class>
+		<class>recommender.persistence.entities.ETaskOptimizationmodel</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
 			<property name="hibernate.hbm2ddl.auto" value="validate"/>

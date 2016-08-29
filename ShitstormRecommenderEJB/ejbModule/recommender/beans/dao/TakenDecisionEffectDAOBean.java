@@ -21,6 +21,7 @@ public class TakenDecisionEffectDAOBean extends GenericDAOImpl<ETakenDecisionEff
 		decisionEffect.setDecisionEffect(observedEffect);
 		goal.getTakenDecisionEffects().add(decisionEffect);
 		decisionEffect.getTakenDecisions().add(takenDecision);
+		takenDecision.setTakenDecisionEffect(decisionEffect);
 		return this.create(decisionEffect);
 	}
 }

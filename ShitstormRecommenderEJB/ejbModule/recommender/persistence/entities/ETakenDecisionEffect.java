@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -49,7 +50,7 @@ public class ETakenDecisionEffect implements Serializable {
 	private Calendar observedDate;
 
 	// bi-directional many-to-one association to ETakenDecision
-	@OneToMany(mappedBy = "takenDecisionEffect")
+	@OneToMany(mappedBy = "takenDecisionEffect", cascade={CascadeType.MERGE,CascadeType.PERSIST})
 	private List<ETakenDecision> takenDecisions;
 
 	public ETakenDecisionEffect() {

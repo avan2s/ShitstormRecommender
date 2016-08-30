@@ -6,9 +6,13 @@ import recommender.persistence.entities.EGoal;
 import recommender.persistence.entities.ENodeGroup;
 import recommender.persistence.entities.EProcess;
 
-public interface IGoalDAO extends IGenericDAO<EGoal, Integer>{
+public interface IGoalDAO extends IGenericDAO<EGoal, Integer> {
 	public EGoal findByGoalFigure(String goalFigure);
-	public EGoal create(String goalFigure, KipGoalEffect goalEffect);
-	public EGoal create(String goalFigure, KipGoalEffect goalEffect, EProcess process);
-	public EGoal create(String goalFigure, KipGoalEffect goalEffect, EProcess process, ENodeGroup nodeGroup);
+
+	EGoal create(String goalFigure, String goalUnit, KipGoalEffect goalEffect, EProcess process, ENodeGroup nodeGroup);
+
+	EGoal create(String goalFigure, String goalUnit, KipGoalEffect goalEffect, EProcess process);
+
+	EGoal create(String goalFigure, String goalUnit, KipGoalEffect goalEffect);
+
 }

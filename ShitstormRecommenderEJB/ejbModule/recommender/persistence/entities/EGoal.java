@@ -44,6 +44,7 @@ public class EGoal implements Serializable {
 	private KipGoalEffect goalEffect;
 
 	private String goalFigure;
+	private String goalUnit;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "node_group_id")
@@ -129,6 +130,14 @@ public class EGoal implements Serializable {
 
 	public void setTakenDecisionEffects(List<ETakenDecisionEffect> takenDecisionEffects) {
 		this.takenDecisionEffects = takenDecisionEffects;
+	}
+
+	public String getGoalUnit() {
+		return goalUnit;
+	}
+
+	public void setGoalUnit(String goalUnit) {
+		this.goalUnit = goalUnit;
 	}
 
 }

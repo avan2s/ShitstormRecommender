@@ -58,19 +58,19 @@ public class InitializationBean {
 
 				// Ziele verlinken
 				ENodeGroup ngKZ = this.daoNodeGroup.findByAbbreviationInProcess(refProcess, "KZ");
-				this.goalDAO.create("Kundenzufriedenheit", KipGoalEffect.POSITIVE, process, ngKZ);
+				this.goalDAO.create("Kundenzufriedenheit","KZE", KipGoalEffect.POSITIVE, process, ngKZ);
 
 				ENodeGroup ngIG = this.daoNodeGroup.findByAbbreviationInProcess(refProcess, "IG");
-				this.goalDAO.create("Informationsgewinn", KipGoalEffect.POSITIVE, process, ngIG);
+				this.goalDAO.create("Informationsgewinn","IGE", KipGoalEffect.POSITIVE, process, ngIG);
 
 				ENodeGroup ngZA = this.daoNodeGroup.findByAbbreviationInProcess(refProcess, "ZA");
-				this.goalDAO.create("Zeitaufwand", KipGoalEffect.NEGATIVE, process, ngZA);
+				this.goalDAO.create("Zeitaufwand","min", KipGoalEffect.NEGATIVE, process, ngZA);
 
 				ENodeGroup ngK = this.daoNodeGroup.findByAbbreviationInProcess(refProcess, "K");
-				this.goalDAO.create("Kosten", KipGoalEffect.NEGATIVE, process, ngK);
+				this.goalDAO.create("Kosten","Euro", KipGoalEffect.NEGATIVE, process, ngK);
 
 				ENodeGroup ngSP = this.daoNodeGroup.findByAbbreviationInProcess(refProcess, "SP");
-				this.goalDAO.create("Stakeholder-Power", KipGoalEffect.NEGATIVE, process, ngSP);
+				this.goalDAO.create("Stakeholder-Power","SPE", KipGoalEffect.NEGATIVE, process, ngSP);
 
 				// Tasks verlinken
 				ENodeGroup ngSMTb = this.daoNodeGroup.findByAbbreviationInProcess(refProcess, "SMTb");

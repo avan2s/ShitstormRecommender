@@ -26,27 +26,31 @@ public class GoalDAOBean extends GenericDAOImpl<EGoal, Integer> implements IGoal
 	}
 
 	@Override
-	public EGoal create(String goalFigure, KipGoalEffect goalEffect) {
+	public EGoal create(String goalFigure, String goalUnit, KipGoalEffect goalEffect) {
 		EGoal goal = new EGoal();
 		goal.setGoalEffect(goalEffect);
 		goal.setGoalFigure(goalFigure);
+		goal.setGoalUnit(goalUnit);
 		return this.create(goal);
 	}
 
 	@Override
-	public EGoal create(String goalFigure, KipGoalEffect goalEffect, EProcess process) {
+	public EGoal create(String goalFigure, String goalUnit, KipGoalEffect goalEffect, EProcess process) {
 		EGoal goal = new EGoal();
 		goal.setGoalEffect(goalEffect);
 		goal.setGoalFigure(goalFigure);
+		goal.setGoalUnit(goalUnit);
 		goal.getProcesses().add(process);
 		return this.create(goal);
 	}
 
 	@Override
-	public EGoal create(String goalFigure, KipGoalEffect goalEffect, EProcess process, ENodeGroup nodeGroup) {
+	public EGoal create(String goalFigure, String goalUnit, KipGoalEffect goalEffect, EProcess process,
+			ENodeGroup nodeGroup) {
 		EGoal goal = new EGoal();
 		goal.setGoalEffect(goalEffect);
 		goal.setGoalFigure(goalFigure);
+		goal.setGoalUnit(goalUnit);
 		goal.setNodeGroup(nodeGroup);
 		goal.getProcesses().add(process);
 		process.getGoals().add(goal);

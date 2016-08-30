@@ -7,10 +7,16 @@ public class GoalRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String goalFigure;
+	private double goalValue;
+	private String goalUnit;
 	private int goalStartPeriod;
 	private int goalEndPeriod;
-	private double goalValue;
+
 	private double goalWeight;
+
+	public GoalRequest() {
+
+	}
 
 	public double getGoalWeight() {
 		return goalWeight;
@@ -18,10 +24,6 @@ public class GoalRequest implements Serializable {
 
 	public void setGoalWeight(double goalWeight) {
 		this.goalWeight = goalWeight;
-	}
-
-	public GoalRequest() {
-
 	}
 
 	public String getGoalFigure() {
@@ -54,6 +56,14 @@ public class GoalRequest implements Serializable {
 
 	public void setGoalValue(double goalValue) {
 		this.goalValue = goalValue;
+	}
+
+	public String getGoalUnit() {
+		return goalUnit;
+	}
+
+	public void setGoalUnit(String goalUnit) {
+		this.goalUnit = goalUnit;
 	}
 
 }

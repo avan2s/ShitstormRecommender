@@ -220,7 +220,6 @@ public class RecommenderBean implements IRecommender {
 		}
 		for (GoalRequest goalRequest : goalRequests) {
 			goalRequest.setGoalWeight(goalRequest.getGoalWeight() / sum);
-			;
 		}
 		return goalRequests;
 	}
